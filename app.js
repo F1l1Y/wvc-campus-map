@@ -15,11 +15,11 @@ const CAMPUS_CENTER = [37.2637, -122.0096];   // center of the trimmed campus fo
 const COLORS = { navy: "#0f172a", lime: "#a3e635", cyan: "#22d3ee", white: "#f8fafc" };
 
 const map = L.map("map", { zoomControl: true, attributionControl: true }).setView(CAMPUS_CENTER, 17);
-// CARTO dark basemap (free tier, attribution required) on OpenStreetMap data. It matches the club's
-// navy palette and avoids leaning on OSM's own tile servers, whose usage policy is meant for light use.
-L.tileLayer("https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png", {
-  maxZoom: 20, maxNativeZoom: 19, subdomains: "abcd",
-  attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors © <a href="https://carto.com/attributions">CARTO</a>',
+// OpenStreetMap standard tiles (CARTO's free basemap now requires an API key). Light use only,
+// which a club map is; attribution below is required by the OSM tile usage policy.
+L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
+  maxZoom: 20, maxNativeZoom: 19,
+  attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
 }).addTo(map);
 
 const buildings = [];           // {name, code, layer, center}
