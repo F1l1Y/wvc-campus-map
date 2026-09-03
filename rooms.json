@@ -1,0 +1,56 @@
+{
+  "_doc": "Room directory. Every entry comes from an official posted plan; nothing is estimated. Add a building only with its source and the date it was photographed.",
+  "buildings": {
+    "CC": {
+      "name": "Campus Center and Bookstore",
+      "source": "Campus Center floor plan posted on campus (West Valley College, dated August 2026), photographed 2026-09-03",
+      "rooms": [
+        {"code": "CC 101", "name": "Center for Identity, Exploration, and Inclusion"},
+        {"code": "CC 102", "name": "Lower Lounge"},
+        {"code": "CC 103", "name": "Upper Lounge"},
+        {"code": "CC 109", "name": "El Centro"},
+        {"code": "CC 110", "name": "Club Room"},
+        {"code": "CC 112", "name": "Sankofa Center"},
+        {"code": "CC 114", "name": "Pride Center"},
+        {"code": "CC 115", "name": "Cafe Vasona / Starbucks"},
+        {"code": "CC 121", "name": "Concierge Desk"},
+        {"code": "CC 122", "name": "Event Center"},
+        {"code": "CC 123", "name": "Inclusive Community Center"},
+        {"code": "CC 125", "name": "The Oak Bistro"},
+        {"code": "CC 126", "name": "Thomas Cuisine Offices and Kitchen"},
+        {"code": "CC 140", "name": "Baltic Room"},
+        {"code": "CC 201", "name": "Cafe Vasona"},
+        {"code": "CC 314", "name": "Food Pantry / Student Needs"},
+        {"code": "CC 317", "name": "Veterans Resource Center"}
+      ],
+      "notes": ["Identity centers, ADA accessible doors, and restrooms are marked on the posted plan; not yet transcribed."]
+    },
+    "PE": {
+      "name": "Physical Education",
+      "source": "Physical Education building plan 23-2A, Rev. 9/90, posted on campus, photographed 2026-09-03. Room uses may have changed since 1990; handwritten notes on the posted copy read Pickleball, Badminton, Kickboxing, Yoga, and Adaptive.",
+      "rooms": [
+        {"code": "PE 1A-1Y", "name": "Division offices (1A, 1B, 1C, 1D, 1E, 1F, 1G, 1H, 1J, 1K, 1L, 1P, 1Q, 1R, 1S, 1T, 1U, 1V, 1W, 1X, 1Y)"},
+        {"code": "PE 2", "name": "Lecture Room"},
+        {"code": "PE 3", "name": "Women's Shower and Locker"},
+        {"code": "PE 3A", "name": "Women's Staff Lockers"},
+        {"code": "PE 3B", "name": "Cot Room"},
+        {"code": "PE 4", "name": "Classroom"},
+        {"code": "PE 5", "name": "Classroom"},
+        {"code": "PE 6", "name": "Men's Staff Lockers"},
+        {"code": "PE 7", "name": "Dance Studio"},
+        {"code": "PE 8", "name": "Gymnasium"},
+        {"code": "PE 9", "name": "Gymnastics"},
+        {"code": "PE 10", "name": "Main Gymnasium"},
+        {"code": "PE 10A", "name": "Storage"},
+        {"code": "PE 11", "name": "Wrestling"},
+        {"code": "PE 12", "name": "Weight Training"},
+        {"code": "PE 14", "name": "Men's Shower and Locker"},
+        {"code": "PE 15", "name": "Equipment Storage"},
+        {"code": "PE 16", "name": "Sports Medicine Lab"},
+        {"code": "PE 17", "name": "Fitness Lab"},
+        {"code": "PE 22", "name": "Computer Services (with Research and Planning, Grants and Development)"},
+        {"code": "PE Pool", "name": "Swimming Pool and Bleachers; Pool Mechanical Building"}
+      ]
+    }
+  }
+}

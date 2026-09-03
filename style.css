@@ -27,3 +27,4 @@ body { display: flex; flex-direction: column; height: 100dvh; }
 .leaflet-popup-tip { background: var(--navy2); }
 .leaflet-popup-content a { color: var(--cyan); }
 @media (max-width: 600px) { .brand .by { display: none; } .actions button { padding: 10px 8px; font-size: 13px; } }
+.results .dim { color: var(--slate); font-size: 12px; }

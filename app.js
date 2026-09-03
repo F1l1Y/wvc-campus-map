@@ -1,8 +1,8 @@
 /* West Valley Campus Map, MVP. Static, no backend, no keys, no analytics.
    Data: campus.geojson (OpenStreetMap, ODbL). Edit that file, not this one, to fix names/codes. */
 
-// The one highlighted place. Coordinates are an estimate until verified on site;
-// when confirmed, set verified: true and the "approximate" note disappears.
+// The one highlighted place. Shown ONLY once its coordinates are verified on site
+// (verified: true). Nothing on this map is estimated.
 const ABC_LAB = {
   name: "AI Builders Club lab · NWP 02",
   detail: "North Walk Portable 02 (the former Success Center)",
@@ -16,7 +16,7 @@ const COLORS = { navy: "#0f172a", lime: "#a3e635", cyan: "#22d3ee", white: "#f8f
 
 const map = L.map("map", { zoomControl: true, attributionControl: true }).setView(CAMPUS_CENTER, 17);
 L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-  maxZoom: 20, attribution: "© OpenStreetMap contributors",
+  maxZoom: 20, maxNativeZoom: 19, attribution: "© OpenStreetMap contributors",
 }).addTo(map);
 
 const buildings = [];           // {name, code, layer, center}
@@ -52,16 +52,32 @@ fetch("campus.geojson?v=3").then(r => r.json()).then(gj => {
       }
     },
   }).addTo(map);
-  map.fitBounds(layer.getBounds(), { padding: [24, 24] });
-  addLab();
+  map.fitBounds(layer.getBounds(), { padding: [24, 24], maxZoom: 17 });
+  if (ABC_LAB.verified) addLab(); else document.getElementById("lab").hidden = true;
+  loadRooms();
 });
 
 function addLab() {
   const icon = L.divIcon({ className: "lab-pin", html: "<span>🧠</span>", iconSize: [34, 34], iconAnchor: [17, 34] });
   const m = L.marker([ABC_LAB.lat, ABC_LAB.lon], { icon, zIndexOffset: 1000 }).addTo(map);
-  const note = ABC_LAB.verified ? "" : "<br><em>location approximate, verify on site</em>";
-  m.bindPopup(`<b>${ABC_LAB.name}</b><br>${ABC_LAB.detail}${note}<br><a href="${ABC_LAB.discord}" target="_blank" rel="noopener">Join on Discord</a>`);
+  m.bindPopup(`<b>${ABC_LAB.name}</b><br>${ABC_LAB.detail}<br><a href="${ABC_LAB.discord}" target="_blank" rel="noopener">Join on Discord</a>`);
   document.getElementById("lab").addEventListener("click", () => { map.flyTo([ABC_LAB.lat, ABC_LAB.lon], 19); m.openPopup(); });
+}
+
+// ---- room directory (official posted plans only, each with its source) ----
+const rooms = [];   // {code, name, bcode, bname, source}
+function loadRooms() {
+  fetch("rooms.json?v=4").then(r => r.json()).then(j => {
+    for (const [bcode, b] of Object.entries(j.buildings || {}))
+      for (const r of b.rooms) rooms.push({ code: r.code, name: r.name, bcode, bname: b.name, source: b.source });
+  }).catch(() => {});
+}
+function buildingByCode(code) { return buildings.find(b => b.code === code); }
+function selectRoom(r) {
+  const b = buildingByCode(r.bcode);
+  results.hidden = true; q.blur();
+  if (!b) return;
+  select(b, `<b>${r.code} · ${r.name}</b><br>${r.bname}<br><small>Source: ${r.source}</small>`);
 }
 
 // ---- search ----
@@ -69,23 +85,31 @@ const q = document.getElementById("q"), results = document.getElementById("resul
 function norm(s) { return (s || "").toLowerCase().replace(/[^a-z0-9]+/g, " ").trim(); }
 function find(text) {
   const n = norm(text); if (!n) return [];
-  return buildings.filter(b => norm(b.name).includes(n) || norm(b.code) === n).slice(0, 8);
+  const bs = buildings.filter(b => norm(b.name).includes(n) || norm(b.code) === n).map(b => ({ kind: "b", b }));
+  const rs = rooms.filter(r => norm(r.code).includes(n) || norm(r.name).includes(n)).map(r => ({ kind: "r", r }));
+  return [...bs, ...rs].slice(0, 10);
 }
-function select(b) {
+function select(b, html) {
   if (selected) selected.layer.setStyle(styleFor({ properties: { kind: "building", name: selected.name } }));
   selected = b;
   b.layer.setStyle({ color: COLORS.lime, weight: 4, fillColor: COLORS.lime, fillOpacity: 0.35 });
-  map.flyTo(b.center, 19); b.layer.openPopup();
+  map.flyTo(b.center, 18);
+  if (html) b.layer.bindPopup(html).openPopup(); else b.layer.openPopup();
   results.hidden = true; q.blur();
 }
 q.addEventListener("input", () => {
   const hits = find(q.value);
-  results.innerHTML = hits.map((b, i) => `<li data-i="${i}">${b.code ? b.code + " · " : ""}${b.name}</li>`).join("");
+  results.innerHTML = hits.map((h, i) => h.kind === "b"
+    ? `<li data-i="${i}">${h.b.code ? h.b.code + " · " : ""}${h.b.name}</li>`
+    : `<li data-i="${i}"><b>${h.r.code}</b> · ${h.r.name} <span class="dim">· ${h.r.bname}</span></li>`).join("");
   results.hidden = hits.length === 0;
-  results.querySelectorAll("li").forEach(li => li.addEventListener("click", () => select(hits[+li.dataset.i])));
+  results.querySelectorAll("li").forEach(li => li.addEventListener("click", () => {
+    const h = hits[+li.dataset.i]; h.kind === "b" ? select(h.b) : selectRoom(h.r);
+  }));
 });
 document.getElementById("searchForm").addEventListener("submit", e => {
-  e.preventDefault(); const hits = find(q.value); if (hits.length) select(hits[0]);
+  e.preventDefault(); const hits = find(q.value);
+  if (hits.length) hits[0].kind === "b" ? select(hits[0].b) : selectRoom(hits[0].r);
 });
 
 // ---- you are here (opt-in, nothing stored) ----
