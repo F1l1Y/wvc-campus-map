@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>West Valley Campus Map</title>
+<meta name="description" content="Interactive map of the West Valley College campus. Built by the AI Builders Club.">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"
+      integrity="sha512-h9FcoyWjHcOcmEVkxOfTLnmZFWIH0iZhZT1H2TbOq55xssQGEJHEaIm+PgoUaZbRvQTNTluNOEfb1ZRy6D3BOw==" crossorigin="anonymous" referrerpolicy="no-referrer">
+<link rel="stylesheet" href="style.css?v=3">
+</head>
+<body>
+<header class="bar">
+  <div class="brand">
+    <span class="dot"></span>
+    <strong>West Valley Campus Map</strong>
+    <span class="by">built by the AI Builders Club</span>
+  </div>
+  <form class="search" id="searchForm" autocomplete="off" role="search">
+    <input id="q" type="search" placeholder="Find a building (Library, Science and Math, LS...)" aria-label="Find a building">
+    <button type="submit">Go</button>
+  </form>
+  <div class="actions">
+    <button id="locate" type="button" title="Show my location">📍 You are here</button>
+    <button id="lab" type="button" title="AI Builders Club lab">🧠 ABC lab</button>
+  </div>
+</header>
+<div id="map" role="application" aria-label="Campus map"></div>
+<ul id="results" class="results" hidden></ul>
+<footer class="foot">
+  <span>Map data © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors (ODbL)</span>
+  <span>·</span>
+  <a href="https://discord.gg/h99K887zd4" target="_blank" rel="noopener">Join the club on Discord</a>
+</footer>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"
+        integrity="sha512-puJW3E/qXDqYp9IfhAI54BJEaWIfloJ7JWs7OeD5i6ruC9JZL1gERT1wjtwXFlh7CjE7ZJ+/vcRZRkIYIb6p4g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="app.js?v=3"></script>
+</body>
+</html>

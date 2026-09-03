@@ -1,0 +1,25 @@
+{
+ "code_to_osm": {
+  "LRC": "Library",
+  "CC": "Campus Center and Bookstore",
+  "FOX": "Fox Center",
+  "KP": "Kirkorian Pavilion",
+  "CIL": "Cilker School of Art and Design",
+  "LASS": "Social Science and Language Arts",
+  "IS": "Information Systems",
+  "ART": "Theater Arts",
+  "SM": "Science and Math",
+  "CHE": "Che School of Professional Studies",
+  "PE": "Physical Education",
+  "CH2": "Child Development Center",
+  "CE": "Community Education",
+  "AD/PO": "Administration"
+ },
+ "nwp_estimate": [
+  37.26519,
+  -122.00972
+ ],
+ "fit_points": 10,
+ "mean_residual_m": 35.9,
+ "method": "affine fit, official map PDF word positions to OSM centroids"
+}
