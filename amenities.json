@@ -1,0 +1,770 @@
+{
+ "_doc": "Amenities digitised from the official West Valley College campus/evacuation map (February 2024). Positions are that map's own pictogram positions, transformed onto surveyed OpenStreetMap building footprints by a 9-point affine fit (mean 4.5 m, max 6.2 m in the academic core). Nothing here is an estimate by eye; every point traces to a symbol printed on the official map.",
+ "source": "West Valley College campus/evacuation map, February 2024 (WVMCCD police, emergency-prep PDF)",
+ "source_url": "https://www.wvm.edu/services/police/emergency-prep/_files/pdf/evacuation-map-wvc.pdf",
+ "map_date": "2024-02",
+ "digitised": "2026-09-08",
+ "fit": {
+  "method": "affine, 9 control points, official-map pixels -> OSM footprint centroids",
+  "mean_residual_m": 4.32,
+  "max_residual_m": 6.53
+ },
+ "items": [
+  {
+   "type": "aed",
+   "title": "AED (defibrillator)",
+   "lat": 37.263023,
+   "lon": -122.011623,
+   "near": "Fox Center",
+   "near_code": "FOX",
+   "near_m": 20.9
+  },
+  {
+   "type": "aed",
+   "title": "AED (defibrillator)",
+   "lat": 37.265535,
+   "lon": -122.0095,
+   "near": "Science and Math",
+   "near_code": "SM",
+   "near_m": 21.1
+  },
+  {
+   "type": "aed",
+   "title": "AED (defibrillator)",
+   "lat": 37.26307,
+   "lon": -122.010969,
+   "near": "Campus Center and Bookstore",
+   "near_code": "CC",
+   "near_m": 21.3
+  },
+  {
+   "type": "aed",
+   "title": "AED (defibrillator)",
+   "lat": 37.264507,
+   "lon": -122.011766,
+   "near": "Che School of Professional Studies",
+   "near_code": "CHE",
+   "near_m": 24.3
+  },
+  {
+   "type": "aed",
+   "title": "AED (defibrillator)",
+   "lat": 37.264117,
+   "lon": -122.011429,
+   "near": "Student Services Center",
+   "near_code": "",
+   "near_m": 27.7
+  },
+  {
+   "type": "aed",
+   "title": "AED (defibrillator)",
+   "lat": 37.265021,
+   "lon": -122.007459,
+   "near": "Theater Arts",
+   "near_code": "ART",
+   "near_m": 27.8
+  },
+  {
+   "type": "aed",
+   "title": "AED (defibrillator)",
+   "lat": 37.264131,
+   "lon": -122.011946,
+   "near": "Student Services Center",
+   "near_code": "",
+   "near_m": 28.5
+  },
+  {
+   "type": "aed",
+   "title": "AED (defibrillator)",
+   "lat": 37.263073,
+   "lon": -122.00865,
+   "near": "Social Science and Language Arts",
+   "near_code": "LASS",
+   "near_m": 30.0
+  },
+  {
+   "type": "aed",
+   "title": "AED (defibrillator)",
+   "lat": 37.264489,
+   "lon": -122.008417,
+   "near": "Art Studios",
+   "near_code": "",
+   "near_m": 33.8
+  },
+  {
+   "type": "aed",
+   "title": "AED (defibrillator)",
+   "lat": 37.262068,
+   "lon": -122.009707,
+   "near": "Physical Education",
+   "near_code": "PE",
+   "near_m": 34.4
+  },
+  {
+   "type": "aed",
+   "title": "AED (defibrillator)",
+   "lat": 37.264132,
+   "lon": -122.012142,
+   "near": "Student Services Center",
+   "near_code": "",
+   "near_m": 43.7
+  },
+  {
+   "type": "aed",
+   "title": "AED (defibrillator)",
+   "lat": 37.261537,
+   "lon": -122.010146,
+   "near": "Physical Education",
+   "near_code": "PE",
+   "near_m": 49.0
+  },
+  {
+   "type": "aed",
+   "title": "AED (defibrillator)",
+   "lat": 37.265372,
+   "lon": -122.01163,
+   "near": "Cilker School of Art and Design",
+   "near_code": "CIL",
+   "near_m": 51.2
+  },
+  {
+   "type": "aed",
+   "title": "AED (defibrillator)",
+   "lat": 37.262677,
+   "lon": -122.011652,
+   "near": "Fox Center",
+   "near_code": "FOX",
+   "near_m": 52.5
+  },
+  {
+   "type": "aed",
+   "title": "AED (defibrillator)",
+   "lat": 37.264475,
+   "lon": -122.009779,
+   "near": "Learning Services",
+   "near_code": "",
+   "near_m": 65.2
+  },
+  {
+   "type": "aed",
+   "title": "AED (defibrillator)",
+   "lat": 37.260201,
+   "lon": -122.010705,
+   "near": "Physical Education",
+   "near_code": "PE",
+   "near_m": 196.3
+  },
+  {
+   "type": "aed",
+   "title": "AED (defibrillator)",
+   "lat": 37.259068,
+   "lon": -122.010955,
+   "near": "Information Systems",
+   "near_code": "IS",
+   "near_m": 315.4
+  },
+  {
+   "type": "ev_charger",
+   "title": "EV charging",
+   "lat": 37.263248,
+   "lon": -122.012698,
+   "near": "Fox Center",
+   "near_code": "FOX",
+   "near_m": 79.1
+  },
+  {
+   "type": "ev_charger",
+   "title": "EV charging",
+   "lat": 37.264401,
+   "lon": -122.006198,
+   "near": "Visual Arts Building",
+   "near_code": "",
+   "near_m": 100.8
+  },
+  {
+   "type": "ev_charger",
+   "title": "EV charging",
+   "lat": 37.264838,
+   "lon": -122.012775,
+   "near": "Che School of Professional Studies",
+   "near_code": "CHE",
+   "near_m": 113.5
+  },
+  {
+   "type": "ev_charger",
+   "title": "EV charging",
+   "lat": 37.26658,
+   "lon": -122.009336,
+   "near": "Child Development Center",
+   "near_code": "CH2",
+   "near_m": 116.6
+  },
+  {
+   "type": "evacuation_site",
+   "title": "Evacuation assembly site",
+   "lat": 37.26597,
+   "lon": -122.00719,
+   "near": "Theater Arts",
+   "near_code": "ART",
+   "near_m": 82.1
+  },
+  {
+   "type": "evacuation_site",
+   "title": "Evacuation assembly site",
+   "lat": 37.266877,
+   "lon": -122.010215,
+   "near": "Community Education",
+   "near_code": "CE",
+   "near_m": 112.2
+  },
+  {
+   "type": "evacuation_site",
+   "title": "Evacuation assembly site",
+   "lat": 37.2644,
+   "lon": -122.005962,
+   "near": "Visual Arts Building",
+   "near_code": "",
+   "near_m": 120.7
+  },
+  {
+   "type": "evacuation_site",
+   "title": "Evacuation assembly site",
+   "lat": 37.262174,
+   "lon": -122.013125,
+   "near": "Fox Center",
+   "near_code": "FOX",
+   "near_m": 157.3
+  },
+  {
+   "type": "evacuation_site",
+   "title": "Evacuation assembly site",
+   "lat": 37.264421,
+   "lon": -122.013468,
+   "near": "Student Services Center",
+   "near_code": "",
+   "near_m": 165.2
+  },
+  {
+   "type": "evacuation_site",
+   "title": "Evacuation assembly site",
+   "lat": 37.259749,
+   "lon": -122.009884,
+   "near": "Information Systems",
+   "near_code": "IS",
+   "near_m": 204.4
+  },
+  {
+   "type": "evacuation_site",
+   "title": "Evacuation assembly site",
+   "lat": 37.259067,
+   "lon": -122.010808,
+   "near": "Information Systems",
+   "near_code": "IS",
+   "near_m": 308.7
+  },
+  {
+   "type": "parking_accessible",
+   "title": "Accessible parking",
+   "lat": 37.266125,
+   "lon": -122.007752,
+   "near": "Child Development Center",
+   "near_code": "CH2",
+   "near_m": 43.9
+  },
+  {
+   "type": "parking_accessible",
+   "title": "Accessible parking",
+   "lat": 37.263269,
+   "lon": -122.012442,
+   "near": "Fox Center",
+   "near_code": "FOX",
+   "near_m": 57.4
+  },
+  {
+   "type": "parking_accessible",
+   "title": "Accessible parking",
+   "lat": 37.266361,
+   "lon": -122.009992,
+   "near": "Community Education",
+   "near_code": "CE",
+   "near_m": 64.5
+  },
+  {
+   "type": "parking_accessible",
+   "title": "Accessible parking",
+   "lat": 37.264043,
+   "lon": -122.012465,
+   "near": "Student Services Center",
+   "near_code": "",
+   "near_m": 69.2
+  },
+  {
+   "type": "parking_accessible",
+   "title": "Accessible parking",
+   "lat": 37.262694,
+   "lon": -122.012426,
+   "near": "Fox Center",
+   "near_code": "FOX",
+   "near_m": 72.5
+  },
+  {
+   "type": "parking_accessible",
+   "title": "Accessible parking",
+   "lat": 37.264799,
+   "lon": -122.012489,
+   "near": "Che School of Professional Studies",
+   "near_code": "CHE",
+   "near_m": 87.8
+  },
+  {
+   "type": "parking_accessible",
+   "title": "Accessible parking",
+   "lat": 37.266578,
+   "lon": -122.009107,
+   "near": "Child Development Center",
+   "near_code": "CH2",
+   "near_m": 100.0
+  },
+  {
+   "type": "parking_accessible",
+   "title": "Accessible parking",
+   "lat": 37.262248,
+   "lon": -122.012412,
+   "near": "Fox Center",
+   "near_code": "FOX",
+   "near_m": 111.4
+  },
+  {
+   "type": "parking_accessible",
+   "title": "Accessible parking",
+   "lat": 37.26627,
+   "lon": -122.011828,
+   "near": "Cilker School of Art and Design",
+   "near_code": "CIL",
+   "near_m": 114.1
+  },
+  {
+   "type": "parking_accessible",
+   "title": "Accessible parking",
+   "lat": 37.264651,
+   "lon": -122.005937,
+   "near": "Visual Arts Building",
+   "near_code": "",
+   "near_m": 118.1
+  },
+  {
+   "type": "parking_accessible",
+   "title": "Accessible parking",
+   "lat": 37.265383,
+   "lon": -122.012507,
+   "near": "Che School of Professional Studies",
+   "near_code": "CHE",
+   "near_m": 122.1
+  },
+  {
+   "type": "parking_accessible",
+   "title": "Accessible parking",
+   "lat": 37.263907,
+   "lon": -122.00612,
+   "near": "Visual Arts Building",
+   "near_code": "",
+   "near_m": 135.3
+  },
+  {
+   "type": "parking_faculty",
+   "title": "Faculty / staff parking",
+   "lat": 37.261902,
+   "lon": -122.008776,
+   "near": "Information Systems",
+   "near_code": "IS",
+   "near_m": 54.8
+  },
+  {
+   "type": "parking_faculty",
+   "title": "Faculty / staff parking",
+   "lat": 37.263815,
+   "lon": -122.012691,
+   "near": "Student Services Center",
+   "near_code": "",
+   "near_m": 90.7
+  },
+  {
+   "type": "parking_faculty",
+   "title": "Faculty / staff parking",
+   "lat": 37.265026,
+   "lon": -122.012728,
+   "near": "Che School of Professional Studies",
+   "near_code": "CHE",
+   "near_m": 116.0
+  },
+  {
+   "type": "parking_faculty",
+   "title": "Faculty / staff parking",
+   "lat": 37.264846,
+   "lon": -122.005948,
+   "near": "Visual Arts Building",
+   "near_code": "",
+   "near_m": 118.0
+  },
+  {
+   "type": "parking_faculty",
+   "title": "Faculty / staff parking",
+   "lat": 37.266722,
+   "lon": -122.011345,
+   "near": "Community Education",
+   "near_code": "CE",
+   "near_m": 125.7
+  },
+  {
+   "type": "parking_faculty",
+   "title": "Faculty / staff parking",
+   "lat": 37.266941,
+   "lon": -122.00935,
+   "near": "Child Development Center",
+   "near_code": "CH2",
+   "near_m": 143.3
+  },
+  {
+   "type": "parking_faculty",
+   "title": "Faculty / staff parking",
+   "lat": 37.263906,
+   "lon": -122.005915,
+   "near": "Visual Arts Building",
+   "near_code": "",
+   "near_m": 149.5
+  },
+  {
+   "type": "parking_faculty",
+   "title": "Faculty / staff parking",
+   "lat": 37.259058,
+   "lon": -122.010208,
+   "near": "Information Systems",
+   "near_code": "IS",
+   "near_m": 286.4
+  },
+  {
+   "type": "parking_machine",
+   "title": "Parking permit machine",
+   "lat": 37.266479,
+   "lon": -122.010394,
+   "near": "Community Education",
+   "near_code": "CE",
+   "near_m": 66.6
+  },
+  {
+   "type": "parking_machine",
+   "title": "Parking permit machine",
+   "lat": 37.263085,
+   "lon": -122.012732,
+   "near": "Fox Center",
+   "near_code": "FOX",
+   "near_m": 81.1
+  },
+  {
+   "type": "parking_machine",
+   "title": "Parking permit machine",
+   "lat": 37.26651,
+   "lon": -122.007536,
+   "near": "Child Development Center",
+   "near_code": "CH2",
+   "near_m": 82.4
+  },
+  {
+   "type": "parking_machine",
+   "title": "Parking permit machine",
+   "lat": 37.266355,
+   "lon": -122.009137,
+   "near": "Child Development Center",
+   "near_code": "CH2",
+   "near_m": 89.0
+  },
+  {
+   "type": "parking_machine",
+   "title": "Parking permit machine",
+   "lat": 37.266591,
+   "lon": -122.007463,
+   "near": "Child Development Center",
+   "near_code": "CH2",
+   "near_m": 93.3
+  },
+  {
+   "type": "parking_machine",
+   "title": "Parking permit machine",
+   "lat": 37.266532,
+   "lon": -122.007389,
+   "near": "Child Development Center",
+   "near_code": "CH2",
+   "near_m": 94.0
+  },
+  {
+   "type": "parking_machine",
+   "title": "Parking permit machine",
+   "lat": 37.264118,
+   "lon": -122.012763,
+   "near": "Student Services Center",
+   "near_code": "",
+   "near_m": 96.5
+  },
+  {
+   "type": "parking_machine",
+   "title": "Parking permit machine",
+   "lat": 37.264852,
+   "lon": -122.006165,
+   "near": "Visual Arts Building",
+   "near_code": "",
+   "near_m": 99.0
+  },
+  {
+   "type": "parking_machine",
+   "title": "Parking permit machine",
+   "lat": 37.266575,
+   "lon": -122.007343,
+   "near": "Child Development Center",
+   "near_code": "CH2",
+   "near_m": 100.1
+  },
+  {
+   "type": "parking_machine",
+   "title": "Parking permit machine",
+   "lat": 37.262476,
+   "lon": -122.012713,
+   "near": "Fox Center",
+   "near_code": "FOX",
+   "near_m": 107.6
+  },
+  {
+   "type": "parking_machine",
+   "title": "Parking permit machine",
+   "lat": 37.264684,
+   "lon": -122.012779,
+   "near": "Che School of Professional Studies",
+   "near_code": "CHE",
+   "near_m": 111.3
+  },
+  {
+   "type": "parking_machine",
+   "title": "Parking permit machine",
+   "lat": 37.264131,
+   "lon": -122.005937,
+   "near": "Visual Arts Building",
+   "near_code": "",
+   "near_m": 134.3
+  },
+  {
+   "type": "parking_machine",
+   "title": "Parking permit machine",
+   "lat": 37.266495,
+   "lon": -122.012006,
+   "near": "Cilker School of Art and Design",
+   "near_code": "CIL",
+   "near_m": 143.6
+  },
+  {
+   "type": "parking_machine",
+   "title": "Parking permit machine",
+   "lat": 37.265595,
+   "lon": -122.012796,
+   "near": "Cilker School of Art and Design",
+   "near_code": "CIL",
+   "near_m": 154.6
+  },
+  {
+   "type": "parking_machine",
+   "title": "Parking permit machine",
+   "lat": 37.259376,
+   "lon": -122.011077,
+   "near": "Physical Education",
+   "near_code": "PE",
+   "near_m": 293.3
+  },
+  {
+   "type": "parking_machine",
+   "title": "Parking permit machine",
+   "lat": 37.25966,
+   "lon": -122.012798,
+   "near": "Physical Education",
+   "near_code": "PE",
+   "near_m": 362.6
+  },
+  {
+   "type": "parking_motorcycle",
+   "title": "Motorcycle parking",
+   "lat": 37.261402,
+   "lon": -122.008522,
+   "near": "Information Systems",
+   "near_code": "IS",
+   "near_m": 46.8
+  },
+  {
+   "type": "parking_motorcycle",
+   "title": "Motorcycle parking",
+   "lat": 37.263487,
+   "lon": -122.012449,
+   "near": "Fox Center",
+   "near_code": "FOX",
+   "near_m": 68.6
+  },
+  {
+   "type": "parking_motorcycle",
+   "title": "Motorcycle parking",
+   "lat": 37.266471,
+   "lon": -122.011079,
+   "near": "Community Education",
+   "near_code": "CE",
+   "near_m": 89.1
+  },
+  {
+   "type": "parking_motorcycle",
+   "title": "Motorcycle parking",
+   "lat": 37.264651,
+   "lon": -122.006143,
+   "near": "Visual Arts Building",
+   "near_code": "",
+   "near_m": 99.9
+  },
+  {
+   "type": "parking_visitor",
+   "title": "Visitor parking",
+   "lat": 37.263489,
+   "lon": -122.01267,
+   "near": "Fox Center",
+   "near_code": "FOX",
+   "near_m": 85.4
+  },
+  {
+   "type": "parking_visitor",
+   "title": "Visitor parking",
+   "lat": 37.266943,
+   "lon": -122.009124,
+   "near": "Child Development Center",
+   "near_code": "CH2",
+   "near_m": 130.3
+  },
+  {
+   "type": "parking_visitor",
+   "title": "Visitor parking",
+   "lat": 37.25906,
+   "lon": -122.01057,
+   "near": "Information Systems",
+   "near_code": "IS",
+   "near_m": 299.3
+  },
+  {
+   "type": "restroom_gender_neutral",
+   "title": "Gender-neutral restroom",
+   "lat": 37.264701,
+   "lon": -122.007309,
+   "near": "Visual Arts Building",
+   "near_code": "",
+   "near_m": 3.7
+  },
+  {
+   "type": "restroom_gender_neutral",
+   "title": "Gender-neutral restroom",
+   "lat": 37.264747,
+   "lon": -122.010449,
+   "near": "Learning Services",
+   "near_code": "",
+   "near_m": 4.3
+  },
+  {
+   "type": "restroom_gender_neutral",
+   "title": "Gender-neutral restroom",
+   "lat": 37.263168,
+   "lon": -122.009052,
+   "near": "Social Science and Language Arts",
+   "near_code": "LASS",
+   "near_m": 9.2
+  },
+  {
+   "type": "restroom_gender_neutral",
+   "title": "Gender-neutral restroom",
+   "lat": 37.263329,
+   "lon": -122.010518,
+   "near": "Kirkorian Pavilion",
+   "near_code": "KP",
+   "near_m": 11.4
+  },
+  {
+   "type": "restroom_gender_neutral",
+   "title": "Gender-neutral restroom",
+   "lat": 37.265348,
+   "lon": -122.011195,
+   "near": "Cilker School of Art and Design",
+   "near_code": "CIL",
+   "near_m": 16.3
+  },
+  {
+   "type": "restroom_gender_neutral",
+   "title": "Gender-neutral restroom",
+   "lat": 37.262332,
+   "lon": -122.009333,
+   "near": "Police Department",
+   "near_code": "",
+   "near_m": 20.2
+  },
+  {
+   "type": "restroom_gender_neutral",
+   "title": "Gender-neutral restroom",
+   "lat": 37.264496,
+   "lon": -122.011344,
+   "near": "Che School of Professional Studies",
+   "near_code": "CHE",
+   "near_m": 20.7
+  },
+  {
+   "type": "restroom_gender_neutral",
+   "title": "Gender-neutral restroom",
+   "lat": 37.263962,
+   "lon": -122.011929,
+   "near": "Student Services Center",
+   "near_code": "",
+   "near_m": 21.4
+  },
+  {
+   "type": "restroom_gender_neutral",
+   "title": "Gender-neutral restroom",
+   "lat": 37.26292,
+   "lon": -122.011897,
+   "near": "Fox Center",
+   "near_code": "FOX",
+   "near_m": 24.3
+  },
+  {
+   "type": "restroom_gender_neutral",
+   "title": "Gender-neutral restroom",
+   "lat": 37.265323,
+   "lon": -122.007752,
+   "near": "Fine Arts and Music",
+   "near_code": "",
+   "near_m": 25.6
+  },
+  {
+   "type": "restroom_gender_neutral",
+   "title": "Gender-neutral restroom",
+   "lat": 37.262917,
+   "lon": -122.011289,
+   "near": "Campus Center and Bookstore",
+   "near_code": "CC",
+   "near_m": 33.2
+  },
+  {
+   "type": "restroom_gender_neutral",
+   "title": "Gender-neutral restroom",
+   "lat": 37.264069,
+   "lon": -122.007646,
+   "near": "Library",
+   "near_code": "LRC",
+   "near_m": 45.4
+  },
+  {
+   "type": "restroom_gender_neutral",
+   "title": "Gender-neutral restroom",
+   "lat": 37.259059,
+   "lon": -122.010328,
+   "near": "Information Systems",
+   "near_code": "IS",
+   "near_m": 290.3
+  }
+ ]
+}

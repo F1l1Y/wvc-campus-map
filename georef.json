@@ -1,0 +1,47 @@
+{
+ "matrix": [
+  [
+   0.005841886088155893,
+   -0.24598365798404714
+  ],
+  [
+   -0.24360927273709124,
+   0.001370539683067973
+  ],
+  [
+   389.80073335562605,
+   419.99762015376757
+  ]
+ ],
+ "lat0": 37.2637,
+ "lon0": -122.0096,
+ "mean_residual_m": 4.32,
+ "max_residual_m": 6.53,
+ "n_control": 16,
+ "dpi": 400,
+ "control_px_bbox": [
+  650.1,
+  799.9,
+  3223.7,
+  2445.9
+ ],
+ "control_labels": [
+  "SM",
+  "CH2",
+  "CC",
+  "FOX",
+  "ADPO",
+  "SSC",
+  "MU",
+  "IS",
+  "LRC",
+  "CIL",
+  "CE",
+  "VAB",
+  "TRACK",
+  "BVOLLEY",
+  "SOFTBALL_A",
+  "SOFTBALL_B"
+ ],
+ "source": "West Valley College campus/evacuation map, February 2024 (WVMCCD police, emergency-prep PDF)"
+}
