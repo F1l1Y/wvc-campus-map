@@ -4,36 +4,59 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>West Valley Campus Map</title>
-<meta name="description" content="Interactive map of the West Valley College campus. Built by the AI Builders Club.">
+<meta name="description" content="Interactive map of West Valley College: every building, room search, floor plans, restrooms, AEDs and evacuation sites. Built by the AI Builders Club.">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"
       integrity="sha512-h9FcoyWjHcOcmEVkxOfTLnmZFWIH0iZhZT1H2TbOq55xssQGEJHEaIm+PgoUaZbRvQTNTluNOEfb1ZRy6D3BOw==" crossorigin="anonymous" referrerpolicy="no-referrer">
-<link rel="stylesheet" href="style.css?v=4">
+<link rel="stylesheet" href="style.css?v=10">
 </head>
 <body>
+
 <header class="bar">
   <div class="brand">
-    <span class="dot"></span>
-    <strong>West Valley Campus Map</strong>
-    <span class="by">built by the AI Builders Club</span>
+    <span class="dot" aria-hidden="true"></span>
+    <span class="wordmark">West&nbsp;Valley <b>Campus&nbsp;Map</b></span>
+    <span class="by">built by the AI&nbsp;Builders&nbsp;Club</span>
   </div>
+
   <form class="search" id="searchForm" autocomplete="off" role="search">
-    <input id="q" type="search" placeholder="Find a building or room (Library, SM, CC 122...)" aria-label="Find a building">
-    <button type="submit">Go</button>
+    <svg class="mag" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4.2-4.2"/></svg>
+    <input id="q" type="search" enterkeyhint="search"
+           placeholder="Find a room or building — try PE 10, LRC 141, SM 33"
+           aria-label="Find a room or building" aria-expanded="false" aria-controls="results">
+    <button class="clear" id="clearBtn" type="button" hidden aria-label="Clear">&times;</button>
+    <ul id="results" class="results" role="listbox" hidden></ul>
   </form>
+
   <div class="actions">
-    <button id="locate" type="button" title="Show my location">📍 You are here</button>
-    <button id="lab" type="button" title="AI Builders Club lab">🧠 ABC lab</button>
+    <button id="locate" type="button" class="pill">Where am I</button>
   </div>
 </header>
+
 <div id="map" role="application" aria-label="Campus map"></div>
-<ul id="results" class="results" hidden></ul>
+
+<nav class="layers" id="layers" aria-label="Map layers">
+  <button data-layer="restroom_gender_neutral" class="chip">Restrooms</button>
+  <button data-layer="aed" class="chip">AEDs</button>
+  <button data-layer="evacuation_site" class="chip">Evacuation</button>
+  <button data-layer="parking" class="chip">Parking</button>
+  <button data-layer="ev_charger" class="chip">EV</button>
+</nav>
+
+<aside id="panel" class="panel" hidden aria-live="polite">
+  <button id="panelClose" class="panelClose" type="button" aria-label="Close">&times;</button>
+  <div id="panelBody"></div>
+</aside>
+
 <footer class="foot">
-  <span>Map data © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors (ODbL)</span>
-  <span>·</span>
-  <a href="https://discord.gg/h99K887zd4" target="_blank" rel="noopener">Join the club on Discord</a>
+  <span>Buildings &amp; parking © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors (ODbL)</span>
+  <span class="sep">·</span>
+  <button id="aboutBtn" class="linkish" type="button">Where the data comes from</button>
+  <span class="sep">·</span>
+  <a href="https://discord.gg/h99K887zd4" target="_blank" rel="noopener">Join the club</a>
 </footer>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"
         integrity="sha512-puJW3E/qXDqYp9IfhAI54BJEaWIfloJ7JWs7OeD5i6ruC9JZL1gERT1wjtwXFlh7CjE7ZJ+/vcRZRkIYIb6p4g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-<script src="app.js?v=6"></script>
+<script src="app.js?v=10"></script>
 </body>
 </html>
