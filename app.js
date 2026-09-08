@@ -38,7 +38,7 @@ function dataError(what) {
   el.innerHTML = `<b>Could not load ${what}.</b> Check your connection and reload.`;
   document.body.appendChild(el);
 }
-fetch("campus.geojson?v=26").then(r => r.json()).then(gj => {
+fetch("campus.geojson?v=31").then(r => r.json()).then(gj => {
   const layer = L.geoJSON(gj, {
     style: styleFor,
     onEachFeature: (f, ly) => {
@@ -64,7 +64,7 @@ fetch("campus.geojson?v=26").then(r => r.json()).then(gj => {
   }).addTo(map);
   const built = L.featureGroup(DATA.buildings.map(b => b.layer).concat(DATA.sportLayers));
   map.invalidateSize();
-  try { map.fitBounds(built.getBounds(), { padding: [24, 24], maxZoom: 17 }); }
+  try { map.fitBounds(built.getBounds(), { padding: [24, 24], maxZoom: 17, animate: false }); }
   catch (e) { map.setView(CAMPUS_CENTER, 16); }
   addEventListener("resize", () => map.invalidateSize());
   addEventListener("orientationchange", () => setTimeout(() => map.invalidateSize(), 250));
@@ -75,7 +75,7 @@ fetch("campus.geojson?v=26").then(r => r.json()).then(gj => {
 
 /* ------------------------------------------------------------- rooms */
 function loadRooms() {
-  return fetch("rooms.json?v=26").then(r => r.json()).then(j => {
+  return fetch("rooms.json?v=31").then(r => r.json()).then(j => {
     DATA.roomsDoc = j;
     for (const [bcode, b] of Object.entries(j.buildings || {}))
       for (const r of b.rooms)
@@ -90,7 +90,7 @@ function loadRooms() {
                           source: inv.source, kind: "schedule" });
       }
     // plans
-    return Promise.all(["pe","lrc"].map(id => fetch(`plans/${id}.json?v=26`).then(r => r.json()).then(p => {
+    return Promise.all(["pe","lrc"].map(id => fetch(`plans/${id}.json?v=31`).then(r => r.json()).then(p => {
       DATA.plans[p.building] = p;
       p.rooms.forEach((r, idx) => {
         if (!r.code) {
@@ -105,6 +105,7 @@ function loadRooms() {
       });
     }).catch(() => {})));
   }).then(() => {
+    Object.values(DATA.plans).forEach(buildIndoor);
     DATA.buildings.forEach(b => {
       if (b.code && DATA.plans[b.code]) {
         b.layer.setStyle(styleFor({ properties: { kind: "building", name: b.name, code: b.code } }));
@@ -122,7 +123,7 @@ function loadRooms() {
   });
 }
 function loadWalk() {
-  fetch("walkgraph.json?v=26").then(r => r.json()).then(j => {
+  fetch("walkgraph.json?v=31").then(r => r.json()).then(j => {
     DATA.walk = j;
     j.adj = Array.from({ length: j.lat.length }, () => []);
     j.edges.forEach(([a, b]) => {
@@ -132,18 +133,70 @@ function loadWalk() {
   }).catch(() => {});
 }
 function loadCoverage() {
-  fetch("coverage.json?v=26").then(r => r.json()).then(j => { DATA.coverage = j; }).catch(() => {});
+  fetch("coverage.json?v=31").then(r => r.json()).then(j => { DATA.coverage = j; }).catch(() => {});
 }
 function loadRoutes() {
-  fetch("evac_routes.json?v=26").then(r => r.json()).then(j => { DATA.routes = j; }).catch(() => {});
+  fetch("evac_routes.json?v=31").then(r => r.json()).then(j => { DATA.routes = j; }).catch(() => {});
 }
 function loadAmenities() {
-  fetch("amenities.json?v=26").then(r => r.json()).then(j => { DATA.amen = j; buildAmenityLayers(j); });
+  fetch("amenities.json?v=31").then(r => r.json()).then(j => { DATA.amen = j; buildAmenityLayers(j); });
 }
 function buildingByCode(code) {
   const n = norm(code);
   return DATA.buildings.find(b => norm(b.code) === n)
       || DATA.buildings.find(b => norm(b.code).split(" ").includes(n));
+}
+
+/* ------------------------------- indoor layer: the plan placed on the map */
+const indoor = {};        // building code -> {overlay, rooms:{code: layer}, group}
+function buildIndoor(plan) {
+  if (!plan.georef || !plan.image) return;
+  const g = plan.georef.image_bounds;
+  const bounds = L.latLngBounds([g.south, g.west], [g.north, g.east]);
+  const overlay = L.imageOverlay(plan.image + "?v=31", bounds, {
+    opacity: .92, interactive: false, alt: `Floor plan of ${plan.name}`, className: "planoverlay" });
+  const rooms = {}, group = L.layerGroup();
+  plan.rooms.forEach(r => {
+    if (!r.geo || !r.code) return;
+    const poly = L.polygon(r.geo, { color: "#2b6cb0", weight: 1, fillColor: "#2b6cb0",
+                                    fillOpacity: .04, className: "iroom" });
+    poly.bindTooltip(`${r.code}${r.name ? " · " + r.name : ""}`, { sticky: true });
+    poly.on("click", () => {
+      const rec = DATA.rooms.find(x => norm(x.code) === norm(r.code));
+      if (rec) { q.value = r.code; clearBtn.hidden = false; showRoom(rec); }
+    });
+    rooms[r.code] = poly; poly.addTo(group);
+  });
+  indoor[plan.building] = { overlay, rooms, group, bounds, plan };
+}
+let indoorOn = null, indoorHi = null, focusTarget = null;
+// Re-apply the framing after the page has settled. The opening fitBounds and the plan image
+// decoding both change the view or the sheet height after showRoom has already run.
+function refocus() {
+  if (!focusTarget) return;
+  try {
+    if (focusTarget.poly) frameOn(focusTarget.poly.getBounds().pad(2.2), 21, false);
+    else if (focusTarget.b) frameOn(L.featureGroup(
+      DATA.buildings.filter(x => x.code === focusTarget.b.code).map(x => x.layer)).getBounds(), 18.5, false);
+  } catch (e) {}
+}
+function showIndoor(bcode) {
+  const ix = indoor[bcode]; if (!ix) return null;
+  if (indoorOn && indoorOn !== ix) hideIndoor();
+  if (indoorOn !== ix) { ix.overlay.addTo(map); ix.group.addTo(map); indoorOn = ix; }
+  return ix;
+}
+function hideIndoor() {
+  if (!indoorOn) return;
+  indoorOn.overlay.remove(); indoorOn.group.remove(); indoorOn = null; indoorHi = null;
+}
+function highlightIndoorRoom(bcode, code) {
+  const ix = showIndoor(bcode); if (!ix) return null;
+  if (indoorHi) indoorHi.setStyle({ color: "#2b6cb0", weight: 1, fillColor: "#2b6cb0", fillOpacity: .04 });
+  const poly = ix.rooms[code]; if (!poly) return ix;
+  poly.setStyle({ color: "#31600a", weight: 4, fillColor: "#8fce2a", fillOpacity: .55 });
+  poly.bringToFront(); indoorHi = poly;
+  return ix;
 }
 
 /* --------------------------------------------------------- amenities */
@@ -436,7 +489,7 @@ window.evacRoute = (code, name) => {
 /* ------------------------------------------------------------- panel */
 const panel = $("#panel"), panelBody = $("#panelBody");
 $("#panelClose").addEventListener("click", closePanel);
-function closePanel() { panel.hidden = true; clearRoute(); clearWalk(); }
+function closePanel() { panel.hidden = true; clearRoute(); clearWalk(); hideIndoor(); }
 function openPanel(html) {
   panelBody.innerHTML = html; panel.hidden = false; panel.scrollTop = 0;
   const h = panelBody.querySelector("h2");
@@ -459,9 +512,19 @@ function sheetHeight() {
 // Frame a set of bounds in the part of the map the sheet does not cover.
 // Leaflet's own padding options collapse to minZoom once the padding approaches the map
 // height, so the centre and zoom are computed here instead.
-function frameOn(bounds, maxZoom, animate = true) {
-  const sz = map.getSize();
-  if (sz.x < 60 || sz.y < 60) return;
+function frameOn(bounds, maxZoom, animate = true, tries = 0) {
+  let sz = map.getSize();
+  if (sz.x < 60 || sz.y < 60) {
+    // container not measured yet (first paint, or an embedded viewport that reports 0)
+    map.invalidateSize({ animate: false });
+    sz = map.getSize();
+  }
+  if (sz.x < 60 || sz.y < 60) {
+    if (tries < 8) setTimeout(() => frameOn(bounds, maxZoom, false, tries + 1), 250);
+    return;
+  }
+  map.stop();   // Leaflet ignores setView while an earlier pan/zoom animation is still running
+
   const sheet = sheetHeight(), M = 34;
   let z = map.getBoundsZoom(bounds, false, L.point(M * 2, sheet + M * 2));
   z = Math.max(map.getMinZoom(), Math.min(z, maxZoom));
@@ -529,6 +592,7 @@ function showBuilding(b, partial) {
   if (b.note) h += `<div class="src">${esc(b.note)}</div>`;
   if (b.codeSrc) h += `<div class="src"><b>Building code:</b> ${esc(b.codeSrc)}</div>`;
   openPanel(h + `</div>`);
+  if (indoor[b.code]) showIndoor(b.code); else hideIndoor();
   flyTo(b);
 }
 
@@ -556,7 +620,15 @@ function showRoom(r) {
   else if (!inPlan) h += `<div class="warn">This room is on the plan above but is not outlined yet, so it is not lit up.</div>`;
   h += `<div class="src"><b>Source:</b> ${esc(r.source)}</div></div>`;
   openPanel(h);
-  if (b) flyTo(b, 18.5);
+  const ix = inPlan ? highlightIndoorRoom(r.bcode, r.code) : null;
+  focusTarget = (ix && ix.rooms[r.code]) ? { poly: ix.rooms[r.code] } : (b ? { b } : null);
+  if (ix && ix.rooms[r.code]) {
+    if (b) { selected.forEach(x => x.layer.setStyle(styleFor({ properties: { kind: "building", name: x.name, code: x.code } })));
+             selected = DATA.buildings.filter(x => x.code === b.code); }
+    const rb = ix.rooms[r.code].getBounds().pad(2.2);
+    try { frameOn(rb, 21); } catch (e) { if (b) flyTo(b, 18.5); }
+    setTimeout(() => { try { frameOn(ix.rooms[r.code].getBounds().pad(2.2), 21, false); } catch (e) {} }, 430);
+  } else if (b) flyTo(b, 18.5);
   if (plan) { initPlanPan(); if (inPlan) setTimeout(() => focusRoom(r.code), 30); }
 }
 
@@ -580,7 +652,7 @@ function planSVG(plan, highlight) {
              data-name="${esc(r.name || "")}" data-i="${i}"><title>${esc(r.code || r.name)}${r.name && r.code ? " · " + esc(r.name) : ""}</title></polygon>` +
       (showLabel && short ? `<text class="plabel" x="${cx}" y="${cy}" text-anchor="middle" dominant-baseline="central" style="font-size:${fs}px">${esc(short)}</text>` : "");
   }).join("");
-  const img = raster ? `<image href="${esc(plan.image)}?v=26" x="0" y="0" width="${plan.width}"
+  const img = raster ? `<image href="${esc(plan.image)}?v=31" x="0" y="0" width="${plan.width}"
       height="${plan.height}" preserveAspectRatio="none"/>` : "";
   return `<svg viewBox="0 0 ${plan.width} ${plan.height}" preserveAspectRatio="xMidYMid meet" id="plansvg"
       role="img" aria-label="Floor plan of ${esc(plan.name)}, ${plan.rooms.length} spaces${highlight ? ", " + esc(highlight) + " highlighted" : ""}">
@@ -676,11 +748,18 @@ function applyDeepLink() {
   const r = u.get("r"), b = u.get("b");
   if (r) {
     const hit = DATA.rooms.find(x => norm(x.code) === norm(r));
-    if (hit) { q.value = hit.code; clearBtn.hidden = false; showRoom(hit); return; }
+    if (hit) {
+      q.value = hit.code; clearBtn.hidden = false; showRoom(hit);
+      [300, 800, 1500].forEach(t => setTimeout(refocus, t));
+      return;
+    }
   }
   if (b) {
     const bb = buildingByCode(b) || DATA.buildings.find(x => norm(x.name) === norm(b));
-    if (bb) { q.value = bb.code || bb.name; clearBtn.hidden = false; showBuilding(bb); }
+    if (bb) {
+      q.value = bb.code || bb.name; clearBtn.hidden = false; showBuilding(bb);
+      [300, 800, 1500].forEach(t => setTimeout(refocus, t));
+    }
   }
 }
 function shareUrl(kind, value) {
@@ -708,6 +787,7 @@ $("#locate").addEventListener("click", () => {
 });
 
 window.__map = map; window.__DATA = DATA;   // debug handles, no behaviour attached
+window.__dbg = { get focusTarget() { return focusTarget; }, refocus, frameOn, indoor, sheetHeight };
 
 window.showCoverage = function () {
   const j = DATA.coverage; if (!j) return;
