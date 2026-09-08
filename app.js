@@ -60,6 +60,7 @@ fetch("campus.geojson?v=10").then(r => r.json()).then(gj => {
   addEventListener("resize", () => map.invalidateSize());
   addEventListener("orientationchange", () => setTimeout(() => map.invalidateSize(), 250));
   loadRooms(); loadAmenities(); loadRoutes(); loadCoverage();
+  setTimeout(applyDeepLink, 400);
 });
 
 /* ------------------------------------------------------------- rooms */
@@ -333,6 +334,7 @@ function showBuilding(b, partial) {
   h += `<div class="btnrow">` +
        (plan ? `<button class="btn primary" onclick="openPlan('${b.code}')">Open floor plan</button>` : "") +
        (hasRoute ? `<button class="btn" onclick="evacRoute('${esc(b.code)}', '${esc(b.name).replace(/'/g, "\\'")}')">Evacuation route</button>` : "") +
+       `<button class="btn" onclick="copyLink('b','${esc(b.code || b.name)}',this)">Copy link</button>` +
        `</div><div id="routeInfo" class="src" style="border-left-color:#b1341f"></div>`;
   if (dir) {
     h += `<h3>Rooms on the posted plan</h3><ul class="roomlist">` +
@@ -365,7 +367,7 @@ function showRoom(r) {
   if (r.name) h += `<p class="sub">${esc(r.name)}</p>`;
   if (r.capacity) h += `<p class="sub">Seats ${esc(r.capacity)}</p>`;
   if (r.zone) h += `<p class="sub">Where in the building: ${esc(r.zone)}</p>`;
-  h += `</div>`;
+  h += `<div class="btnrow"><button class="btn" onclick="copyLink('r','${esc(r.code)}',this)">Copy link to this room</button></div></div>`;
   if (inPlan) h += `<div class="planbar"><span>Highlighted on the posted floor plan</span>
       <span style="margin-left:auto"><button class="zoombtn" onclick="planZoom(1.3)">+</button>
       <button class="zoombtn" onclick="planZoom(1/1.3)">−</button>
@@ -483,6 +485,29 @@ function focusPoly(r) {
   applyPlanTransform();
 }
 window.openPlan = openPlan; window.planZoom = planZoom; window.planReset = planReset;
+
+/* ------------------------------------------------------- deep links */
+function applyDeepLink() {
+  const u = new URLSearchParams(location.search);
+  const r = u.get("r"), b = u.get("b");
+  if (r) {
+    const hit = DATA.rooms.find(x => norm(x.code) === norm(r));
+    if (hit) { q.value = hit.code; clearBtn.hidden = false; showRoom(hit); return; }
+  }
+  if (b) {
+    const bb = buildingByCode(b) || DATA.buildings.find(x => norm(x.name) === norm(b));
+    if (bb) { q.value = bb.code || bb.name; clearBtn.hidden = false; showBuilding(bb); }
+  }
+}
+function shareUrl(kind, value) {
+  return `${location.origin}${location.pathname}?${kind}=${encodeURIComponent(value)}`;
+}
+window.copyLink = function (kind, value, btn) {
+  const url = shareUrl(kind, value);
+  const done = () => { const t = btn.textContent; btn.textContent = "Link copied"; setTimeout(() => btn.textContent = t, 1600); };
+  if (navigator.clipboard) navigator.clipboard.writeText(url).then(done, () => prompt("Copy this link", url));
+  else prompt("Copy this link", url);
+};
 
 /* --------------------------------------------------------- locate me */
 let me = null;
