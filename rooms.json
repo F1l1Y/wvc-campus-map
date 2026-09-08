@@ -170,37 +170,49 @@
   },
   "LRC": {
    "name": "Learning Resource Commons (Library and Success Center)",
-   "source": "LRC wayfinding display photographed in the building 2026-09-02 11:24 (screen shows 'Welcome to the LRC', dated Wednesday 02 September 2026). Room numbers and capacities read from that display. Geometry NOT transcribed: the photo is an angled shot of a screen, so a straight-on capture is needed before a true floor plan can be drawn.",
+   "source": "LRC wayfinding display photographed in the building 2026-09-02 11:24 (screen shows 'Welcome to the LRC', dated Wednesday 02 September 2026). Room numbers and capacities read from that display. Geometry NOT transcribed: the photo is an angled shot of a screen, so a straight-on capture is needed before a true floor plan can be drawn. Study-room numbers and capacities independently confirmed against the library's live booking system (westvalley.libcal.com/reserve) on 2026-09-08.",
    "captured": "2026-09-02",
    "plan": "none",
    "rooms": [
     {
      "code": "LRC 102",
-     "name": "Study room",
+     "name": "Group study room",
      "capacity": 6,
-     "zone": "West study-room row"
+     "zone": "West study-room row",
+     "bookable": true,
+     "confirmed_by": "westvalley.libcal.com booking system, checked 2026-09-08"
     },
     {
      "code": "LRC 103",
-     "name": "Study room",
-     "zone": "West study-room row"
+     "name": "Group study room",
+     "zone": "West study-room row",
+     "capacity": 6,
+     "bookable": true,
+     "confirmed_by": "westvalley.libcal.com booking system, checked 2026-09-08"
     },
     {
      "code": "LRC 104",
-     "name": "Study room",
+     "name": "Group study room",
      "capacity": 6,
-     "zone": "West study-room row"
+     "zone": "West study-room row",
+     "bookable": true,
+     "confirmed_by": "westvalley.libcal.com booking system, checked 2026-09-08"
     },
     {
      "code": "LRC 105",
-     "name": "Study room",
+     "name": "Group study room",
      "capacity": 6,
-     "zone": "West study-room row"
+     "zone": "West study-room row",
+     "bookable": true,
+     "confirmed_by": "westvalley.libcal.com booking system, checked 2026-09-08"
     },
     {
      "code": "LRC 106",
-     "name": "Study room",
-     "zone": "West study-room row"
+     "name": "Group study room",
+     "zone": "West study-room row",
+     "capacity": 6,
+     "bookable": true,
+     "confirmed_by": "westvalley.libcal.com booking system, checked 2026-09-08"
     },
     {
      "code": "LRC 108B",
@@ -210,15 +222,19 @@
     },
     {
      "code": "LRC 109",
-     "name": "Study room",
+     "name": "Group study room",
      "capacity": 6,
-     "zone": "South-west"
+     "zone": "South-west",
+     "bookable": true,
+     "confirmed_by": "westvalley.libcal.com booking system, checked 2026-09-08"
     },
     {
      "code": "LRC 110",
-     "name": "Study room",
+     "name": "Group study room",
      "capacity": 6,
-     "zone": "South-west"
+     "zone": "South-west",
+     "bookable": true,
+     "confirmed_by": "westvalley.libcal.com booking system, checked 2026-09-08"
     },
     {
      "code": "LRC 111",
@@ -228,14 +244,19 @@
     },
     {
      "code": "LRC 115",
-     "name": "Room",
-     "zone": "South, near Meditation rooms"
+     "name": "Group study room",
+     "zone": "South, near Meditation rooms",
+     "capacity": 6,
+     "bookable": true,
+     "confirmed_by": "westvalley.libcal.com booking system, checked 2026-09-08"
     },
     {
      "code": "LRC 116",
-     "name": "Study room",
+     "name": "Group study room",
      "capacity": 6,
-     "zone": "South"
+     "zone": "South",
+     "bookable": true,
+     "confirmed_by": "westvalley.libcal.com booking system, checked 2026-09-08"
     },
     {
      "code": "LRC 121",
@@ -360,8 +381,10 @@
    "notes": [
     "Restrooms, doors and exits are marked on the display but were not transcribed; they need a straight-on photo.",
     "Green rooms on the display were free at 11:24, pink ones booked. That is live booking state, not part of the building, so it is not recorded here.",
-    "Study rooms are booked at westvalley.libcal.com/reserve."
-   ]
+    "Study rooms are booked at westvalley.libcal.com/reserve.",
+    "The nine group study rooms (LRC 102-106, 109, 110, 115, 116) each seat 6, have a wall monitor and a whiteboard, and are booked online then checked in at the Check-Out desk at the front of the library."
+   ],
+   "booking_url": "https://westvalley.libcal.com/reserve"
   }
  },
  "schedule_inventory": {
