@@ -23,6 +23,8 @@ function styleFor(f) {
   if (p.kind === "parking") return { color: C.cyan, weight: 1, fillColor: C.cyan, fillOpacity: .1 };
   if (p.kind === "sport") return { color: "#3f8f5e", weight: 1, fillColor: "#6fbf8a", fillOpacity: .3 };
   const named = !!p.name;
+  const hasPlan = p.code && DATA.plans[p.code];
+  if (hasPlan) return { color: "#31600a", weight: 3, fillColor: C.lime, fillOpacity: .42 };
   return { color: named ? C.limeD : C.slate, weight: named ? 1.5 : 1,
            fillColor: named ? C.navy : "#93a0b4", fillOpacity: named ? .5 : .22 };
 }
@@ -36,7 +38,7 @@ function dataError(what) {
   el.innerHTML = `<b>Could not load ${what}.</b> Check your connection and reload.`;
   document.body.appendChild(el);
 }
-fetch("campus.geojson?v=23").then(r => r.json()).then(gj => {
+fetch("campus.geojson?v=25").then(r => r.json()).then(gj => {
   const layer = L.geoJSON(gj, {
     style: styleFor,
     onEachFeature: (f, ly) => {
@@ -73,7 +75,7 @@ fetch("campus.geojson?v=23").then(r => r.json()).then(gj => {
 
 /* ------------------------------------------------------------- rooms */
 function loadRooms() {
-  return fetch("rooms.json?v=23").then(r => r.json()).then(j => {
+  return fetch("rooms.json?v=25").then(r => r.json()).then(j => {
     DATA.roomsDoc = j;
     for (const [bcode, b] of Object.entries(j.buildings || {}))
       for (const r of b.rooms)
@@ -88,7 +90,7 @@ function loadRooms() {
                           source: inv.source, kind: "schedule" });
       }
     // plans
-    return Promise.all(["pe","lrc"].map(id => fetch(`plans/${id}.json?v=23`).then(r => r.json()).then(p => {
+    return Promise.all(["pe","lrc"].map(id => fetch(`plans/${id}.json?v=25`).then(r => r.json()).then(p => {
       DATA.plans[p.building] = p;
       p.rooms.forEach((r, idx) => {
         if (!r.code) {
@@ -102,10 +104,25 @@ function loadRooms() {
                                source: p.source, kind: "plan" });
       });
     }).catch(() => {})));
+  }).then(() => {
+    DATA.buildings.forEach(b => {
+      if (b.code && DATA.plans[b.code]) {
+        b.layer.setStyle(styleFor({ properties: { kind: "building", name: b.name, code: b.code } }));
+        b.layer.setTooltipContent(`${b.code} · floor plan`);
+      }
+    });
+    const codes = Object.keys(DATA.plans);
+    const hint = document.getElementById("hint");
+    if (hint && codes.length) {
+      hint.innerHTML = `Floor plans so far: ` + codes.map(c =>
+        `<button class="hintbtn" onclick="openPlan('${c}')">${c}</button>`).join(" ") +
+        ` <span class="dim">tap a room on the plan, or search one</span>`;
+      hint.hidden = false;
+    }
   });
 }
 function loadWalk() {
-  fetch("walkgraph.json?v=23").then(r => r.json()).then(j => {
+  fetch("walkgraph.json?v=25").then(r => r.json()).then(j => {
     DATA.walk = j;
     j.adj = Array.from({ length: j.lat.length }, () => []);
     j.edges.forEach(([a, b]) => {
@@ -115,13 +132,13 @@ function loadWalk() {
   }).catch(() => {});
 }
 function loadCoverage() {
-  fetch("coverage.json?v=23").then(r => r.json()).then(j => { DATA.coverage = j; }).catch(() => {});
+  fetch("coverage.json?v=25").then(r => r.json()).then(j => { DATA.coverage = j; }).catch(() => {});
 }
 function loadRoutes() {
-  fetch("evac_routes.json?v=23").then(r => r.json()).then(j => { DATA.routes = j; }).catch(() => {});
+  fetch("evac_routes.json?v=25").then(r => r.json()).then(j => { DATA.routes = j; }).catch(() => {});
 }
 function loadAmenities() {
-  fetch("amenities.json?v=23").then(r => r.json()).then(j => { DATA.amen = j; buildAmenityLayers(j); });
+  fetch("amenities.json?v=25").then(r => r.json()).then(j => { DATA.amen = j; buildAmenityLayers(j); });
 }
 function buildingByCode(code) {
   const n = norm(code);
@@ -563,7 +580,7 @@ function planSVG(plan, highlight) {
              data-name="${esc(r.name || "")}" data-i="${i}"><title>${esc(r.code || r.name)}${r.name && r.code ? " · " + esc(r.name) : ""}</title></polygon>` +
       (showLabel && short ? `<text class="plabel" x="${cx}" y="${cy}" text-anchor="middle" dominant-baseline="central" style="font-size:${fs}px">${esc(short)}</text>` : "");
   }).join("");
-  const img = raster ? `<image href="${esc(plan.image)}?v=23" x="0" y="0" width="${plan.width}"
+  const img = raster ? `<image href="${esc(plan.image)}?v=25" x="0" y="0" width="${plan.width}"
       height="${plan.height}" preserveAspectRatio="none"/>` : "";
   return `<svg viewBox="0 0 ${plan.width} ${plan.height}" preserveAspectRatio="xMidYMid meet" id="plansvg"
       role="img" aria-label="Floor plan of ${esc(plan.name)}, ${plan.rooms.length} spaces${highlight ? ", " + esc(highlight) + " highlighted" : ""}">
