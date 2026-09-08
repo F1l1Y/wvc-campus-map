@@ -36,7 +36,7 @@ function dataError(what) {
   el.innerHTML = `<b>Could not load ${what}.</b> Check your connection and reload.`;
   document.body.appendChild(el);
 }
-fetch("campus.geojson?v=12").then(r => r.json()).then(gj => {
+fetch("campus.geojson?v=13").then(r => r.json()).then(gj => {
   const layer = L.geoJSON(gj, {
     style: styleFor,
     onEachFeature: (f, ly) => {
@@ -73,7 +73,7 @@ fetch("campus.geojson?v=12").then(r => r.json()).then(gj => {
 
 /* ------------------------------------------------------------- rooms */
 function loadRooms() {
-  return fetch("rooms.json?v=12").then(r => r.json()).then(j => {
+  return fetch("rooms.json?v=13").then(r => r.json()).then(j => {
     DATA.roomsDoc = j;
     for (const [bcode, b] of Object.entries(j.buildings || {}))
       for (const r of b.rooms)
@@ -88,7 +88,7 @@ function loadRooms() {
                           source: inv.source, kind: "schedule" });
       }
     // plans
-    return Promise.all(["pe"].map(id => fetch(`plans/${id}.json?v=12`).then(r => r.json()).then(p => {
+    return Promise.all(["pe"].map(id => fetch(`plans/${id}.json?v=13`).then(r => r.json()).then(p => {
       DATA.plans[p.building] = p;
       p.rooms.forEach((r, idx) => {
         if (!r.code) {
@@ -105,13 +105,13 @@ function loadRooms() {
   });
 }
 function loadCoverage() {
-  fetch("coverage.json?v=12").then(r => r.json()).then(j => { DATA.coverage = j; }).catch(() => {});
+  fetch("coverage.json?v=13").then(r => r.json()).then(j => { DATA.coverage = j; }).catch(() => {});
 }
 function loadRoutes() {
-  fetch("evac_routes.json?v=12").then(r => r.json()).then(j => { DATA.routes = j; }).catch(() => {});
+  fetch("evac_routes.json?v=13").then(r => r.json()).then(j => { DATA.routes = j; }).catch(() => {});
 }
 function loadAmenities() {
-  fetch("amenities.json?v=12").then(r => r.json()).then(j => { DATA.amen = j; buildAmenityLayers(j); });
+  fetch("amenities.json?v=13").then(r => r.json()).then(j => { DATA.amen = j; buildAmenityLayers(j); });
 }
 function buildingByCode(code) {
   const n = norm(code);
@@ -322,7 +322,10 @@ function openPanel(html) {
   if (h) { h.setAttribute("tabindex", "-1"); h.focus({ preventScroll: true }); }
 }
 document.addEventListener("keydown", e => {
-  if (e.key === "Escape" && !panel.hidden && !e.target.closest(".search")) { closePanel(); q.focus(); }
+  if (e.key !== "Escape" || panel.hidden) return;
+  const t = e.target;
+  if (t && typeof t.closest === "function" && t.closest(".search")) return;
+  closePanel(); q.focus();
 });
 function esc(s) { return String(s ?? "").replace(/[&<>"]/g, c => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;" }[c])); }
 
