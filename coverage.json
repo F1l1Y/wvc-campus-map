@@ -2,7 +2,7 @@
  "_doc": "What this map can and cannot do per building, and what it would take to close the gap.",
  "generated": "2026-09-08",
  "sections_total": 586,
- "sections_with_plan": 104,
+ "sections_with_plan": 109,
  "legend": {
   "done": "Floor plan traced: a room search lands on the room.",
   "rooms": "Room list known, floor-plan geometry missing: a search lands on the building.",
@@ -78,7 +78,8 @@
    "name": "Learning Resource Commons",
    "sections": 5,
    "rooms": 2,
-   "state": "rooms"
+   "state": "done",
+   "note": "Plan captured 2026-09-02 and perspective-corrected 2026-09-08. 24 of 26 known rooms are outlined on it. Highest foot traffic on campus even though few classes are timetabled here."
   },
   {
    "code": "KVA",

@@ -170,9 +170,9 @@
   },
   "LRC": {
    "name": "Learning Resource Commons (Library and Success Center)",
-   "source": "LRC wayfinding display photographed in the building 2026-09-02 11:24 (screen shows 'Welcome to the LRC', dated Wednesday 02 September 2026). Room numbers and capacities read from that display. Geometry NOT transcribed: the photo is an angled shot of a screen, so a straight-on capture is needed before a true floor plan can be drawn. Study-room numbers and capacities independently confirmed against the library's live booking system (westvalley.libcal.com/reserve) on 2026-09-08.",
+   "source": "LRC wayfinding display photographed in the building 2026-09-02 11:24 (screen shows 'Welcome to the LRC', dated Wednesday 02 September 2026). Room numbers and capacities read from that display. The photo was taken at an angle to the screen and has been perspective-corrected, so the plan is now square-on and 24 of the 26 rooms are outlined on it. Study-room numbers and capacities independently confirmed against the library's live booking system (westvalley.libcal.com/reserve) on 2026-09-08.",
    "captured": "2026-09-02",
-   "plan": "none",
+   "plan": "plans/lrc.json",
    "rooms": [
     {
      "code": "LRC 102",
