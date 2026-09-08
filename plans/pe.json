@@ -1,0 +1,1391 @@
+{
+ "building": "PE",
+ "name": "Physical Education",
+ "width": 1500,
+ "height": 1820,
+ "floor": "Ground floor (single posted sheet)",
+ "source": "West Valley College Physical Education building plan, sheet 23-2A, Rev. 9/90, posted on campus; photographed 2026-09-03. Redrawn as vector geometry 2026-09-08.",
+ "caution": "The posted sheet is dated 1990. Room numbers are as printed; several rooms are in different use today (handwritten notes on the posted copy read Pickleball, Badminton, Kickboxing, Yoga, Adaptive).",
+ "rooms": [
+  {
+   "code": "",
+   "name": "Pool Mechanical Building",
+   "kind": "service",
+   "poly": [
+    [
+     208,
+     108
+    ],
+    [
+     360,
+     108
+    ],
+    [
+     360,
+     300
+    ],
+    [
+     208,
+     300
+    ]
+   ]
+  },
+  {
+   "code": "",
+   "name": "Swimming Pool",
+   "kind": "outdoor",
+   "poly": [
+    [
+     512,
+     232
+    ],
+    [
+     1195,
+     232
+    ],
+    [
+     1195,
+     585
+    ],
+    [
+     512,
+     585
+    ]
+   ]
+  },
+  {
+   "code": "",
+   "name": "Swimming Pool Bleachers",
+   "kind": "outdoor",
+   "poly": [
+    [
+     515,
+     663
+    ],
+    [
+     1180,
+     663
+    ],
+    [
+     1180,
+     750
+    ],
+    [
+     515,
+     750
+    ]
+   ]
+  },
+  {
+   "code": "",
+   "name": "Research & Planning",
+   "kind": "room",
+   "poly": [
+    [
+     1312,
+     300
+    ],
+    [
+     1420,
+     300
+    ],
+    [
+     1420,
+     372
+    ],
+    [
+     1312,
+     372
+    ]
+   ]
+  },
+  {
+   "code": "",
+   "name": "Grants & Development",
+   "kind": "room",
+   "poly": [
+    [
+     1312,
+     396
+    ],
+    [
+     1420,
+     396
+    ],
+    [
+     1420,
+     476
+    ],
+    [
+     1312,
+     476
+    ]
+   ]
+  },
+  {
+   "code": "PE 22",
+   "name": "Computer Services",
+   "kind": "room",
+   "poly": [
+    [
+     1232,
+     490
+    ],
+    [
+     1420,
+     490
+    ],
+    [
+     1420,
+     600
+    ],
+    [
+     1232,
+     600
+    ]
+   ]
+  },
+  {
+   "code": "",
+   "name": "Restroom (W)",
+   "kind": "service",
+   "poly": [
+    [
+     1232,
+     610
+    ],
+    [
+     1285,
+     610
+    ],
+    [
+     1285,
+     652
+    ],
+    [
+     1232,
+     652
+    ]
+   ]
+  },
+  {
+   "code": "",
+   "name": "Restroom (M)",
+   "kind": "service",
+   "poly": [
+    [
+     1288,
+     610
+    ],
+    [
+     1330,
+     610
+    ],
+    [
+     1330,
+     652
+    ],
+    [
+     1288,
+     652
+    ]
+   ]
+  },
+  {
+   "code": "PE 1L",
+   "name": "Division office",
+   "kind": "room",
+   "poly": [
+    [
+     200,
+     600
+    ],
+    [
+     255,
+     600
+    ],
+    [
+     255,
+     630
+    ],
+    [
+     200,
+     630
+    ]
+   ]
+  },
+  {
+   "code": "PE 1K",
+   "name": "Division office",
+   "kind": "room",
+   "poly": [
+    [
+     200,
+     632
+    ],
+    [
+     255,
+     632
+    ],
+    [
+     255,
+     660
+    ],
+    [
+     200,
+     660
+    ]
+   ]
+  },
+  {
+   "code": "PE 1J",
+   "name": "Division office",
+   "kind": "room",
+   "poly": [
+    [
+     200,
+     662
+    ],
+    [
+     255,
+     662
+    ],
+    [
+     255,
+     688
+    ],
+    [
+     200,
+     688
+    ]
+   ]
+  },
+  {
+   "code": "PE 1H",
+   "name": "Division office",
+   "kind": "room",
+   "poly": [
+    [
+     200,
+     690
+    ],
+    [
+     255,
+     690
+    ],
+    [
+     255,
+     718
+    ],
+    [
+     200,
+     718
+    ]
+   ]
+  },
+  {
+   "code": "PE 1G",
+   "name": "Division office",
+   "kind": "room",
+   "poly": [
+    [
+     200,
+     720
+    ],
+    [
+     255,
+     720
+    ],
+    [
+     255,
+     748
+    ],
+    [
+     200,
+     748
+    ]
+   ]
+  },
+  {
+   "code": "PE 1F",
+   "name": "Division office",
+   "kind": "room",
+   "poly": [
+    [
+     200,
+     750
+    ],
+    [
+     255,
+     750
+    ],
+    [
+     255,
+     776
+    ],
+    [
+     200,
+     776
+    ]
+   ]
+  },
+  {
+   "code": "PE 1E",
+   "name": "Division office",
+   "kind": "room",
+   "poly": [
+    [
+     200,
+     778
+    ],
+    [
+     255,
+     778
+    ],
+    [
+     255,
+     804
+    ],
+    [
+     200,
+     804
+    ]
+   ]
+  },
+  {
+   "code": "PE 1D",
+   "name": "Division office",
+   "kind": "room",
+   "poly": [
+    [
+     200,
+     806
+    ],
+    [
+     255,
+     806
+    ],
+    [
+     255,
+     832
+    ],
+    [
+     200,
+     832
+    ]
+   ]
+  },
+  {
+   "code": "PE 1C",
+   "name": "Division office",
+   "kind": "room",
+   "poly": [
+    [
+     200,
+     834
+    ],
+    [
+     255,
+     834
+    ],
+    [
+     255,
+     862
+    ],
+    [
+     200,
+     862
+    ]
+   ]
+  },
+  {
+   "code": "",
+   "name": "Restroom (M)",
+   "kind": "service",
+   "poly": [
+    [
+     262,
+     602
+    ],
+    [
+     285,
+     602
+    ],
+    [
+     285,
+     628
+    ],
+    [
+     262,
+     628
+    ]
+   ]
+  },
+  {
+   "code": "",
+   "name": "Restroom (W)",
+   "kind": "service",
+   "poly": [
+    [
+     262,
+     630
+    ],
+    [
+     285,
+     630
+    ],
+    [
+     285,
+     656
+    ],
+    [
+     262,
+     656
+    ]
+   ]
+  },
+  {
+   "code": "PE 1P",
+   "name": "Division office",
+   "kind": "room",
+   "poly": [
+    [
+     287,
+     615
+    ],
+    [
+     313,
+     615
+    ],
+    [
+     313,
+     652
+    ],
+    [
+     287,
+     652
+    ]
+   ]
+  },
+  {
+   "code": "PE 1Q",
+   "name": "Division office",
+   "kind": "room",
+   "poly": [
+    [
+     316,
+     615
+    ],
+    [
+     342,
+     615
+    ],
+    [
+     342,
+     652
+    ],
+    [
+     316,
+     652
+    ]
+   ]
+  },
+  {
+   "code": "PE 1R",
+   "name": "Division office",
+   "kind": "room",
+   "poly": [
+    [
+     345,
+     615
+    ],
+    [
+     371,
+     615
+    ],
+    [
+     371,
+     652
+    ],
+    [
+     345,
+     652
+    ]
+   ]
+  },
+  {
+   "code": "PE 1S",
+   "name": "Division office",
+   "kind": "room",
+   "poly": [
+    [
+     374,
+     615
+    ],
+    [
+     400,
+     615
+    ],
+    [
+     400,
+     652
+    ],
+    [
+     374,
+     652
+    ]
+   ]
+  },
+  {
+   "code": "PE 1T",
+   "name": "Division office",
+   "kind": "room",
+   "poly": [
+    [
+     403,
+     615
+    ],
+    [
+     429,
+     615
+    ],
+    [
+     429,
+     652
+    ],
+    [
+     403,
+     652
+    ]
+   ]
+  },
+  {
+   "code": "PE 1X",
+   "name": "Division office",
+   "kind": "room",
+   "poly": [
+    [
+     275,
+     678
+    ],
+    [
+     337,
+     678
+    ],
+    [
+     337,
+     716
+    ],
+    [
+     275,
+     716
+    ]
+   ]
+  },
+  {
+   "code": "PE 1W",
+   "name": "Division office",
+   "kind": "room",
+   "poly": [
+    [
+     340,
+     678
+    ],
+    [
+     366,
+     678
+    ],
+    [
+     366,
+     716
+    ],
+    [
+     340,
+     716
+    ]
+   ]
+  },
+  {
+   "code": "PE 1V",
+   "name": "Division office",
+   "kind": "room",
+   "poly": [
+    [
+     370,
+     678
+    ],
+    [
+     396,
+     678
+    ],
+    [
+     396,
+     716
+    ],
+    [
+     370,
+     716
+    ]
+   ]
+  },
+  {
+   "code": "PE 1U",
+   "name": "Division office",
+   "kind": "room",
+   "poly": [
+    [
+     400,
+     678
+    ],
+    [
+     426,
+     678
+    ],
+    [
+     426,
+     716
+    ],
+    [
+     400,
+     716
+    ]
+   ]
+  },
+  {
+   "code": "PE 1Y",
+   "name": "Division office",
+   "kind": "room",
+   "poly": [
+    [
+     268,
+     722
+    ],
+    [
+     303,
+     722
+    ],
+    [
+     303,
+     756
+    ],
+    [
+     268,
+     756
+    ]
+   ]
+  },
+  {
+   "code": "PE 1A",
+   "name": "Division office",
+   "kind": "room",
+   "poly": [
+    [
+     268,
+     788
+    ],
+    [
+     306,
+     788
+    ],
+    [
+     306,
+     822
+    ],
+    [
+     268,
+     822
+    ]
+   ]
+  },
+  {
+   "code": "PE 1B",
+   "name": "Division office",
+   "kind": "room",
+   "poly": [
+    [
+     268,
+     824
+    ],
+    [
+     306,
+     824
+    ],
+    [
+     306,
+     858
+    ],
+    [
+     268,
+     858
+    ]
+   ]
+  },
+  {
+   "code": "PE 2",
+   "name": "Lecture Room",
+   "kind": "room",
+   "poly": [
+    [
+     155,
+     872
+    ],
+    [
+     337,
+     872
+    ],
+    [
+     337,
+     980
+    ],
+    [
+     155,
+     980
+    ]
+   ]
+  },
+  {
+   "code": "PE 3A",
+   "name": "Women's Staff Lockers",
+   "kind": "locker",
+   "poly": [
+    [
+     493,
+     742
+    ],
+    [
+     565,
+     742
+    ],
+    [
+     565,
+     838
+    ],
+    [
+     493,
+     838
+    ]
+   ]
+  },
+  {
+   "code": "PE 3B",
+   "name": "Cot Room",
+   "kind": "room",
+   "poly": [
+    [
+     568,
+     742
+    ],
+    [
+     607,
+     742
+    ],
+    [
+     607,
+     800
+    ],
+    [
+     568,
+     800
+    ]
+   ]
+  },
+  {
+   "code": "PE 4",
+   "name": "Classroom",
+   "kind": "room",
+   "poly": [
+    [
+     490,
+     842
+    ],
+    [
+     590,
+     842
+    ],
+    [
+     590,
+     905
+    ],
+    [
+     490,
+     905
+    ]
+   ]
+  },
+  {
+   "code": "PE 5",
+   "name": "Classroom",
+   "kind": "room",
+   "poly": [
+    [
+     490,
+     948
+    ],
+    [
+     590,
+     948
+    ],
+    [
+     590,
+     1000
+    ],
+    [
+     490,
+     1000
+    ]
+   ]
+  },
+  {
+   "code": "PE 6",
+   "name": "Men's Staff Lockers",
+   "kind": "locker",
+   "poly": [
+    [
+     490,
+     1002
+    ],
+    [
+     590,
+     1002
+    ],
+    [
+     590,
+     1080
+    ],
+    [
+     490,
+     1080
+    ]
+   ]
+  },
+  {
+   "code": "PE 3",
+   "name": "Women's Shower and Locker",
+   "kind": "locker",
+   "poly": [
+    [
+     610,
+     765
+    ],
+    [
+     812,
+     765
+    ],
+    [
+     812,
+     1075
+    ],
+    [
+     610,
+     1075
+    ]
+   ]
+  },
+  {
+   "code": "",
+   "name": "Restroom (W)",
+   "kind": "service",
+   "poly": [
+    [
+     850,
+     790
+    ],
+    [
+     905,
+     790
+    ],
+    [
+     905,
+     822
+    ],
+    [
+     850,
+     822
+    ]
+   ]
+  },
+  {
+   "code": "",
+   "name": "Restroom (M)",
+   "kind": "service",
+   "poly": [
+    [
+     910,
+     790
+    ],
+    [
+     965,
+     790
+    ],
+    [
+     965,
+     822
+    ],
+    [
+     910,
+     822
+    ]
+   ]
+  },
+  {
+   "code": "PE 3D",
+   "name": "",
+   "kind": "room",
+   "poly": [
+    [
+     818,
+     838
+    ],
+    [
+     855,
+     838
+    ],
+    [
+     855,
+     868
+    ],
+    [
+     818,
+     868
+    ]
+   ]
+  },
+  {
+   "code": "PE 16",
+   "name": "Sports Medicine Lab",
+   "kind": "room",
+   "poly": [
+    [
+     885,
+     828
+    ],
+    [
+     990,
+     828
+    ],
+    [
+     990,
+     872
+    ],
+    [
+     885,
+     872
+    ]
+   ]
+  },
+  {
+   "code": "PE 15",
+   "name": "Equipment Storage",
+   "kind": "service",
+   "poly": [
+    [
+     812,
+     875
+    ],
+    [
+     990,
+     875
+    ],
+    [
+     990,
+     1000
+    ],
+    [
+     812,
+     1000
+    ]
+   ]
+  },
+  {
+   "code": "",
+   "name": "Mechanical",
+   "kind": "service",
+   "poly": [
+    [
+     815,
+     1002
+    ],
+    [
+     878,
+     1002
+    ],
+    [
+     878,
+     1042
+    ],
+    [
+     815,
+     1042
+    ]
+   ]
+  },
+  {
+   "code": "PE 14",
+   "name": "Men's Shower and Locker",
+   "kind": "locker",
+   "poly": [
+    [
+     995,
+     795
+    ],
+    [
+     1320,
+     795
+    ],
+    [
+     1320,
+     1080
+    ],
+    [
+     995,
+     1080
+    ]
+   ]
+  },
+  {
+   "code": "PE 17",
+   "name": "Fitness Lab",
+   "kind": "room",
+   "poly": [
+    [
+     1330,
+     855
+    ],
+    [
+     1420,
+     855
+    ],
+    [
+     1420,
+     978
+    ],
+    [
+     1330,
+     978
+    ]
+   ]
+  },
+  {
+   "code": "PE 7",
+   "name": "Dance Studio",
+   "kind": "gym",
+   "poly": [
+    [
+     58,
+     1063
+    ],
+    [
+     300,
+     1063
+    ],
+    [
+     300,
+     1195
+    ],
+    [
+     58,
+     1195
+    ]
+   ]
+  },
+  {
+   "code": "PE 7B",
+   "name": "Mechanical",
+   "kind": "service",
+   "poly": [
+    [
+     62,
+     1197
+    ],
+    [
+     120,
+     1197
+    ],
+    [
+     120,
+     1265
+    ],
+    [
+     62,
+     1265
+    ]
+   ]
+  },
+  {
+   "code": "PE 8A",
+   "name": "Storage",
+   "kind": "service",
+   "poly": [
+    [
+     122,
+     1197
+    ],
+    [
+     205,
+     1197
+    ],
+    [
+     205,
+     1265
+    ],
+    [
+     122,
+     1265
+    ]
+   ]
+  },
+  {
+   "code": "PE 7A",
+   "name": "Storage",
+   "kind": "service",
+   "poly": [
+    [
+     207,
+     1197
+    ],
+    [
+     250,
+     1197
+    ],
+    [
+     250,
+     1265
+    ],
+    [
+     207,
+     1265
+    ]
+   ]
+  },
+  {
+   "code": "PE 8",
+   "name": "Gymnasium",
+   "kind": "gym",
+   "poly": [
+    [
+     8,
+     1270
+    ],
+    [
+     300,
+     1270
+    ],
+    [
+     300,
+     1450
+    ],
+    [
+     8,
+     1450
+    ]
+   ]
+  },
+  {
+   "code": "PE 9",
+   "name": "Gymnastics",
+   "kind": "gym",
+   "poly": [
+    [
+     8,
+     1452
+    ],
+    [
+     300,
+     1452
+    ],
+    [
+     300,
+     1740
+    ],
+    [
+     8,
+     1740
+    ]
+   ]
+  },
+  {
+   "code": "PE 10",
+   "name": "Main Gymnasium",
+   "kind": "gym",
+   "poly": [
+    [
+     378,
+     1205
+    ],
+    [
+     905,
+     1205
+    ],
+    [
+     905,
+     1610
+    ],
+    [
+     378,
+     1610
+    ]
+   ]
+  },
+  {
+   "code": "PE 11",
+   "name": "Wrestling",
+   "kind": "gym",
+   "poly": [
+    [
+     1048,
+     1195
+    ],
+    [
+     1225,
+     1195
+    ],
+    [
+     1225,
+     1345
+    ],
+    [
+     1048,
+     1345
+    ]
+   ]
+  },
+  {
+   "code": "PE 10A",
+   "name": "Storage",
+   "kind": "service",
+   "poly": [
+    [
+     1048,
+     1348
+    ],
+    [
+     1225,
+     1348
+    ],
+    [
+     1225,
+     1400
+    ],
+    [
+     1048,
+     1400
+    ]
+   ]
+  },
+  {
+   "code": "",
+   "name": "Ticket Office",
+   "kind": "room",
+   "poly": [
+    [
+     995,
+     1440
+    ],
+    [
+     1065,
+     1440
+    ],
+    [
+     1065,
+     1478
+    ],
+    [
+     995,
+     1478
+    ]
+   ]
+  },
+  {
+   "code": "",
+   "name": "Restroom (W)",
+   "kind": "service",
+   "poly": [
+    [
+     1068,
+     1420
+    ],
+    [
+     1098,
+     1420
+    ],
+    [
+     1098,
+     1455
+    ],
+    [
+     1068,
+     1455
+    ]
+   ]
+  },
+  {
+   "code": "",
+   "name": "Restroom (M)",
+   "kind": "service",
+   "poly": [
+    [
+     1068,
+     1457
+    ],
+    [
+     1098,
+     1457
+    ],
+    [
+     1098,
+     1492
+    ],
+    [
+     1068,
+     1492
+    ]
+   ]
+  },
+  {
+   "code": "",
+   "name": "Janitor",
+   "kind": "service",
+   "poly": [
+    [
+     1100,
+     1425
+    ],
+    [
+     1135,
+     1425
+    ],
+    [
+     1135,
+     1492
+    ],
+    [
+     1100,
+     1492
+    ]
+   ]
+  },
+  {
+   "code": "PE 12",
+   "name": "Weight Training",
+   "kind": "gym",
+   "poly": [
+    [
+     1048,
+     1495
+    ],
+    [
+     1230,
+     1495
+    ],
+    [
+     1230,
+     1610
+    ],
+    [
+     1048,
+     1610
+    ]
+   ]
+  }
+ ]
+}
