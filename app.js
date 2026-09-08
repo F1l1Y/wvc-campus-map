@@ -6,7 +6,7 @@
    every room comes from an official plan or the official schedule, and carries its source. */
 
 const CAMPUS_CENTER = [37.2637, -122.0096];
-const DATA = { buildings: [], rooms: [], plans: {}, amen: null, roomsDoc: null };
+const DATA = { buildings: [], rooms: [], plans: {}, amen: null, roomsDoc: null, routes: null };
 const $ = (s) => document.querySelector(s);
 
 /* ---------------------------------------------------------------- map */
@@ -54,7 +54,7 @@ fetch("campus.geojson?v=10").then(r => r.json()).then(gj => {
   catch (e) { map.setView(CAMPUS_CENTER, 16); }
   addEventListener("resize", () => map.invalidateSize());
   addEventListener("orientationchange", () => setTimeout(() => map.invalidateSize(), 250));
-  loadRooms(); loadAmenities();
+  loadRooms(); loadAmenities(); loadRoutes();
 });
 
 /* ------------------------------------------------------------- rooms */
@@ -85,6 +85,9 @@ function loadRooms() {
       });
     }).catch(() => {}));
   });
+}
+function loadRoutes() {
+  fetch("evac_routes.json?v=10").then(r => r.json()).then(j => { DATA.routes = j; }).catch(() => {});
 }
 function loadAmenities() {
   fetch("amenities.json?v=10").then(r => r.json()).then(j => { DATA.amen = j; buildAmenityLayers(j); });
@@ -209,10 +212,39 @@ function choose(h) {
   if (h.kind === "building") showBuilding(h.b, h.partial); else showRoom(h.r);
 }
 
+/* -------------------------------------------------- evacuation route */
+let routeLayer = null;
+function showRoute(code, name) {
+  const j = DATA.routes; if (!j) return;
+  const r = j.routes.find(x => (code && x.code === code) || x.name === name);
+  if (!r) { alert("No evacuation route for this building yet."); return; }
+  if (routeLayer) routeLayer.remove();
+  const line = r.path.map(p => [p[1], p[0]]);
+  routeLayer = L.layerGroup([
+    L.polyline(line, { color: "#ffffff", weight: 9, opacity: .9 }),
+    L.polyline(line, { color: "#b1341f", weight: 5, opacity: 1, dashArray: "1 10", lineCap: "round" }),
+    L.circleMarker(line[0], { radius: 7, color: "#fff", weight: 3, fillColor: "#0f172a", fillOpacity: 1 })
+      .bindPopup(`<b>Route starts here</b><br>the path nearest ${esc(r.name)}<br><small>${r.start_snap_m} m from the building centre</small>`),
+    L.circleMarker(line[line.length - 1], { radius: 9, color: "#fff", weight: 3, fillColor: "#b1341f", fillOpacity: 1 })
+      .bindPopup(`<b>Evacuation assembly site</b><br>near ${esc(r.site.near)}`),
+  ]).addTo(map);
+  const sz = map.getSize();
+  if (sz.x > 40 && sz.y > 40) map.fitBounds(L.polyline(line).getBounds(), { padding: [60, 60] });
+  return r;
+}
+function clearRoute() { if (routeLayer) { routeLayer.remove(); routeLayer = null; } }
+window.evacRoute = (code, name) => {
+  const r = showRoute(code, name); if (!r) return;
+  const box = document.getElementById("routeInfo");
+  if (box) box.innerHTML = `<b>${r.walk_m} m</b> on foot to the assembly site near ${esc(r.site.near)},
+    following surveyed campus paths.<br><small style="color:#8b97ad">Starts at the path nearest the
+    building (${r.start_snap_m} m from its centre), not at a door: entrances are not captured yet.</small>`;
+};
+
 /* ------------------------------------------------------------- panel */
 const panel = $("#panel"), panelBody = $("#panelBody");
 $("#panelClose").addEventListener("click", closePanel);
-function closePanel() { panel.hidden = true; }
+function closePanel() { panel.hidden = true; clearRoute(); }
 function openPanel(html) { panelBody.innerHTML = html; panel.hidden = false; panel.scrollTop = 0; }
 function esc(s) { return String(s ?? "").replace(/[&<>"]/g, c => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;" }[c])); }
 
@@ -239,7 +271,11 @@ function showBuilding(b, partial) {
   let h = `<div class="pad"><div class="eyebrow">${esc(b.code || "Building")}</div><h2>${esc(b.name)}</h2>`;
   if (partial) h += `<div class="warn"><b>${esc(partial)}</b> is not in any source I have yet, but ${esc(b.code)} is this building, so this is where to head. The room list below is everything I can currently prove exists in it.</div>`;
   if (b.houses) h += `<p class="sub">${esc(b.houses)}</p>`;
-  if (plan) h += `<div class="btnrow"><button class="btn primary" onclick="openPlan('${b.code}')">Open floor plan</button></div>`;
+  const hasRoute = DATA.routes && DATA.routes.routes.some(x => (b.code && x.code === b.code) || x.name === b.name);
+  h += `<div class="btnrow">` +
+       (plan ? `<button class="btn primary" onclick="openPlan('${b.code}')">Open floor plan</button>` : "") +
+       (hasRoute ? `<button class="btn" onclick="evacRoute('${esc(b.code)}', '${esc(b.name).replace(/'/g, "\\'")}')">Evacuation route</button>` : "") +
+       `</div><div id="routeInfo" class="src" style="border-left-color:#b1341f"></div>`;
   if (dir) {
     h += `<h3>Rooms on the posted plan</h3><ul class="roomlist">` +
       dir.rooms.map(r => `<li><b>${esc(r.code)}</b> ${esc(r.name || "")}${r.capacity ? ` <span class="sub">· ${r.capacity}</span>` : ""}</li>`).join("") + `</ul>`;
