@@ -180,5 +180,6 @@ table.cov tr:last-child td{border-bottom:0}
   .demobar .dtext span{font-size:11.5px}
 }
 
-/* the panel heading is focused programmatically for screen readers; no visible ring for that */
-.panel h2:focus:not(:focus-visible){outline:none}
+/* the panel heading is focused programmatically so screen readers announce it; it is not a
+   tab stop, so the ring is noise. Chrome still treats scripted focus as focus-visible. */
+.panel h2[tabindex]:focus{outline:none;box-shadow:none}
