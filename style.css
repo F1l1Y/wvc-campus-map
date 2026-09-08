@@ -179,3 +179,6 @@ table.cov tr:last-child td{border-bottom:0}
   .demobar .dtext b{font-size:13.5px}
   .demobar .dtext span{font-size:11.5px}
 }
+
+/* the panel heading is focused programmatically for screen readers; no visible ring for that */
+.panel h2:focus:not(:focus-visible){outline:none}
