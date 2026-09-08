@@ -38,7 +38,7 @@ function dataError(what) {
   el.innerHTML = `<b>Could not load ${what}.</b> Check your connection and reload.`;
   document.body.appendChild(el);
 }
-fetch("campus.geojson?v=31").then(r => r.json()).then(gj => {
+fetch("campus.geojson?v=32").then(r => r.json()).then(gj => {
   const layer = L.geoJSON(gj, {
     style: styleFor,
     onEachFeature: (f, ly) => {
@@ -75,7 +75,7 @@ fetch("campus.geojson?v=31").then(r => r.json()).then(gj => {
 
 /* ------------------------------------------------------------- rooms */
 function loadRooms() {
-  return fetch("rooms.json?v=31").then(r => r.json()).then(j => {
+  return fetch("rooms.json?v=32").then(r => r.json()).then(j => {
     DATA.roomsDoc = j;
     for (const [bcode, b] of Object.entries(j.buildings || {}))
       for (const r of b.rooms)
@@ -90,7 +90,7 @@ function loadRooms() {
                           source: inv.source, kind: "schedule" });
       }
     // plans
-    return Promise.all(["pe","lrc"].map(id => fetch(`plans/${id}.json?v=31`).then(r => r.json()).then(p => {
+    return Promise.all(["pe","lrc"].map(id => fetch(`plans/${id}.json?v=32`).then(r => r.json()).then(p => {
       DATA.plans[p.building] = p;
       p.rooms.forEach((r, idx) => {
         if (!r.code) {
@@ -123,7 +123,7 @@ function loadRooms() {
   });
 }
 function loadWalk() {
-  fetch("walkgraph.json?v=31").then(r => r.json()).then(j => {
+  fetch("walkgraph.json?v=32").then(r => r.json()).then(j => {
     DATA.walk = j;
     j.adj = Array.from({ length: j.lat.length }, () => []);
     j.edges.forEach(([a, b]) => {
@@ -133,13 +133,13 @@ function loadWalk() {
   }).catch(() => {});
 }
 function loadCoverage() {
-  fetch("coverage.json?v=31").then(r => r.json()).then(j => { DATA.coverage = j; }).catch(() => {});
+  fetch("coverage.json?v=32").then(r => r.json()).then(j => { DATA.coverage = j; }).catch(() => {});
 }
 function loadRoutes() {
-  fetch("evac_routes.json?v=31").then(r => r.json()).then(j => { DATA.routes = j; }).catch(() => {});
+  fetch("evac_routes.json?v=32").then(r => r.json()).then(j => { DATA.routes = j; }).catch(() => {});
 }
 function loadAmenities() {
-  fetch("amenities.json?v=31").then(r => r.json()).then(j => { DATA.amen = j; buildAmenityLayers(j); });
+  fetch("amenities.json?v=32").then(r => r.json()).then(j => { DATA.amen = j; buildAmenityLayers(j); });
 }
 function buildingByCode(code) {
   const n = norm(code);
@@ -153,7 +153,7 @@ function buildIndoor(plan) {
   if (!plan.georef || !plan.image) return;
   const g = plan.georef.image_bounds;
   const bounds = L.latLngBounds([g.south, g.west], [g.north, g.east]);
-  const overlay = L.imageOverlay(plan.image + "?v=31", bounds, {
+  const overlay = L.imageOverlay(plan.image + "?v=32", bounds, {
     opacity: .92, interactive: false, alt: `Floor plan of ${plan.name}`, className: "planoverlay" });
   const rooms = {}, group = L.layerGroup();
   plan.rooms.forEach(r => {
@@ -618,6 +618,9 @@ function showRoom(r) {
   h += `<div class="pad" style="padding-top:14px">`;
   if (!plan) h += `<div class="warn">This room is real and in ${esc(r.bcode)}, but ${esc(r.bcode)}'s floor plan has not been captured yet, so I can put you at the building, not at the door.</div>`;
   else if (!inPlan) h += `<div class="warn">This room is on the plan above but is not outlined yet, so it is not lit up.</div>`;
+  if (plan && plan.georef && inPlan)
+    h += `<div class="src"><b>On the map:</b> this room is drawn at its real position, to about
+      &plusmn;${plan.georef.accuracy_m} m. ${esc(plan.georef.method)} ${esc(plan.georef.cross_check)}</div>`;
   h += `<div class="src"><b>Source:</b> ${esc(r.source)}</div></div>`;
   openPanel(h);
   const ix = inPlan ? highlightIndoorRoom(r.bcode, r.code) : null;
@@ -652,7 +655,7 @@ function planSVG(plan, highlight) {
              data-name="${esc(r.name || "")}" data-i="${i}"><title>${esc(r.code || r.name)}${r.name && r.code ? " · " + esc(r.name) : ""}</title></polygon>` +
       (showLabel && short ? `<text class="plabel" x="${cx}" y="${cy}" text-anchor="middle" dominant-baseline="central" style="font-size:${fs}px">${esc(short)}</text>` : "");
   }).join("");
-  const img = raster ? `<image href="${esc(plan.image)}?v=31" x="0" y="0" width="${plan.width}"
+  const img = raster ? `<image href="${esc(plan.image)}?v=32" x="0" y="0" width="${plan.width}"
       height="${plan.height}" preserveAspectRatio="none"/>` : "";
   return `<svg viewBox="0 0 ${plan.width} ${plan.height}" preserveAspectRatio="xMidYMid meet" id="plansvg"
       role="img" aria-label="Floor plan of ${esc(plan.name)}, ${plan.rooms.length} spaces${highlight ? ", " + esc(highlight) + " highlighted" : ""}">
