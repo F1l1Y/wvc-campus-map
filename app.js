@@ -36,7 +36,7 @@ function dataError(what) {
   el.innerHTML = `<b>Could not load ${what}.</b> Check your connection and reload.`;
   document.body.appendChild(el);
 }
-fetch("campus.geojson?v=21").then(r => r.json()).then(gj => {
+fetch("campus.geojson?v=23").then(r => r.json()).then(gj => {
   const layer = L.geoJSON(gj, {
     style: styleFor,
     onEachFeature: (f, ly) => {
@@ -73,7 +73,7 @@ fetch("campus.geojson?v=21").then(r => r.json()).then(gj => {
 
 /* ------------------------------------------------------------- rooms */
 function loadRooms() {
-  return fetch("rooms.json?v=21").then(r => r.json()).then(j => {
+  return fetch("rooms.json?v=23").then(r => r.json()).then(j => {
     DATA.roomsDoc = j;
     for (const [bcode, b] of Object.entries(j.buildings || {}))
       for (const r of b.rooms)
@@ -88,7 +88,7 @@ function loadRooms() {
                           source: inv.source, kind: "schedule" });
       }
     // plans
-    return Promise.all(["pe","lrc"].map(id => fetch(`plans/${id}.json?v=21`).then(r => r.json()).then(p => {
+    return Promise.all(["pe","lrc"].map(id => fetch(`plans/${id}.json?v=23`).then(r => r.json()).then(p => {
       DATA.plans[p.building] = p;
       p.rooms.forEach((r, idx) => {
         if (!r.code) {
@@ -105,7 +105,7 @@ function loadRooms() {
   });
 }
 function loadWalk() {
-  fetch("walkgraph.json?v=21").then(r => r.json()).then(j => {
+  fetch("walkgraph.json?v=23").then(r => r.json()).then(j => {
     DATA.walk = j;
     j.adj = Array.from({ length: j.lat.length }, () => []);
     j.edges.forEach(([a, b]) => {
@@ -115,13 +115,13 @@ function loadWalk() {
   }).catch(() => {});
 }
 function loadCoverage() {
-  fetch("coverage.json?v=21").then(r => r.json()).then(j => { DATA.coverage = j; }).catch(() => {});
+  fetch("coverage.json?v=23").then(r => r.json()).then(j => { DATA.coverage = j; }).catch(() => {});
 }
 function loadRoutes() {
-  fetch("evac_routes.json?v=21").then(r => r.json()).then(j => { DATA.routes = j; }).catch(() => {});
+  fetch("evac_routes.json?v=23").then(r => r.json()).then(j => { DATA.routes = j; }).catch(() => {});
 }
 function loadAmenities() {
-  fetch("amenities.json?v=21").then(r => r.json()).then(j => { DATA.amen = j; buildAmenityLayers(j); });
+  fetch("amenities.json?v=23").then(r => r.json()).then(j => { DATA.amen = j; buildAmenityLayers(j); });
 }
 function buildingByCode(code) {
   const n = norm(code);
@@ -302,10 +302,11 @@ function nearestNode(lat, lon) {
   }
   return { node: best, dist: bd };
 }
-function shortestPath(from, to) {
+function shortestPath(from, toSet) {
   const j = DATA.walk; if (!j) return null;
+  const targets = new Set(Array.isArray(toSet) ? toSet : [toSet]);
   const n = j.lat.length, dist = new Float64Array(n).fill(Infinity), prev = new Int32Array(n).fill(-1);
-  const done = new Uint8Array(n); dist[from] = 0;
+  const done = new Uint8Array(n); dist[from] = 0; let to = -1;
   // simple binary heap
   const heap = [[0, from]];
   const push = (v) => { heap.push(v); let i = heap.length - 1;
@@ -321,13 +322,13 @@ function shortestPath(from, to) {
   while (heap.length) {
     const [d, u] = pop();
     if (done[u]) continue; done[u] = 1;
-    if (u === to) break;
+    if (targets.has(u)) { to = u; break; }
     for (const [v, w] of j.adj[u]) {
       const nd = d + w;
       if (nd < dist[v]) { dist[v] = nd; prev[v] = u; push([nd, v]); }
     }
   }
-  if (!isFinite(dist[to])) return null;
+  if (to < 0 || !isFinite(dist[to])) return null;
   const path = []; let cur = to;
   while (cur !== -1) { path.push([j.lat[cur], j.lon[cur]]); cur = prev[cur]; }
   path.reverse();
@@ -342,17 +343,24 @@ window.walkTo = function (bcode, roomCode) {
   const j = DATA.walk;
   if (!j) { if (box) box.textContent = "The walking network is still loading."; return; }
   const entry = j.entries[bcode];
-  if (!entry) { if (box) box.textContent = "No walking route to this building yet."; return; }
+  if (!entry || !entry.nodes || !entry.nodes.length) {
+    if (box) box.textContent = "No walking route to this building yet."; return;
+  }
   if (!navigator.geolocation) { if (box) box.textContent = "This browser cannot provide your location."; return; }
   if (box) box.textContent = "Finding you...";
   navigator.geolocation.getCurrentPosition(pos => {
     const me = [pos.coords.latitude, pos.coords.longitude];
     const start = nearestNode(me[0], me[1]);
     if (!start) return;
-    const r = shortestPath(start.node, entry.node);
+    const r = shortestPath(start.node, entry.nodes);
     if (!r) { if (box) box.textContent = "No path found from where you are."; return; }
     clearWalk(); clearRoute();
     const line = r.path;
+    if (r.metres < 25 || line.length < 2) {
+      if (box) box.innerHTML = `<b>You are already at ${esc(bcode)}.</b>` +
+        (roomCode ? ` ${esc(roomCode)} is marked on the plan below.` : "");
+      return;
+    }
     const mins = Math.max(1, Math.round(r.metres / 78));   // ~1.3 m/s walking
     walkLayer = L.layerGroup([
       L.polyline(line, { color: "#ffffff", weight: 10, opacity: .95 }),
@@ -555,7 +563,7 @@ function planSVG(plan, highlight) {
              data-name="${esc(r.name || "")}" data-i="${i}"><title>${esc(r.code || r.name)}${r.name && r.code ? " · " + esc(r.name) : ""}</title></polygon>` +
       (showLabel && short ? `<text class="plabel" x="${cx}" y="${cy}" text-anchor="middle" dominant-baseline="central" style="font-size:${fs}px">${esc(short)}</text>` : "");
   }).join("");
-  const img = raster ? `<image href="${esc(plan.image)}?v=21" x="0" y="0" width="${plan.width}"
+  const img = raster ? `<image href="${esc(plan.image)}?v=23" x="0" y="0" width="${plan.width}"
       height="${plan.height}" preserveAspectRatio="none"/>` : "";
   return `<svg viewBox="0 0 ${plan.width} ${plan.height}" preserveAspectRatio="xMidYMid meet" id="plansvg"
       role="img" aria-label="Floor plan of ${esc(plan.name)}, ${plan.rooms.length} spaces${highlight ? ", " + esc(highlight) + " highlighted" : ""}">
