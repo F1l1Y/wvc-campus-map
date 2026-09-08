@@ -1,0 +1,106 @@
+{
+ "_doc": "What this map can and cannot do per building, and what it would take to close the gap.",
+ "generated": "2026-09-08",
+ "sections_total": 586,
+ "sections_with_plan": 104,
+ "legend": {
+  "done": "Floor plan traced: a room search lands on the room.",
+  "rooms": "Room list known, floor-plan geometry missing: a search lands on the building.",
+  "none": "Only the schedule's room inventory: a search lands on the building."
+ },
+ "need": "One straight-on photo of the plan posted inside the building, whole sheet in frame, no glare, plus one photo of the main entrance door with location tags on.",
+ "buildings": [
+  {
+   "code": "LASS",
+   "name": "Language Arts & Social Science",
+   "sections": 154,
+   "rooms": 26,
+   "state": "none"
+  },
+  {
+   "code": "PE",
+   "name": "Physical Education",
+   "sections": 104,
+   "rooms": 10,
+   "state": "done"
+  },
+  {
+   "code": "CIL",
+   "name": "Cilker School of Art & Design",
+   "sections": 91,
+   "rooms": 15,
+   "state": "none"
+  },
+  {
+   "code": "SM",
+   "name": "Science and Math",
+   "sections": 82,
+   "rooms": 17,
+   "state": "none"
+  },
+  {
+   "code": "CHE",
+   "name": "Che School of Professional Studies",
+   "sections": 72,
+   "rooms": 13,
+   "state": "none"
+  },
+  {
+   "code": "FOX",
+   "name": "Fox Center",
+   "sections": 39,
+   "rooms": 7,
+   "state": "none"
+  },
+  {
+   "code": "VAB",
+   "name": "Visual Arts Building",
+   "sections": 18,
+   "rooms": 6,
+   "state": "none"
+  },
+  {
+   "code": "ART",
+   "name": "Art Studios",
+   "sections": 9,
+   "rooms": 3,
+   "state": "none"
+  },
+  {
+   "code": "SSC",
+   "name": "Student Services Center",
+   "sections": 8,
+   "rooms": 2,
+   "state": "none"
+  },
+  {
+   "code": "LRC",
+   "name": "Learning Resource Commons",
+   "sections": 5,
+   "rooms": 2,
+   "state": "rooms"
+  },
+  {
+   "code": "KVA",
+   "name": "Kvamme Planetarium",
+   "sections": 3,
+   "rooms": 1,
+   "state": "none"
+  },
+  {
+   "code": "MU",
+   "name": "Music",
+   "sections": 1,
+   "rooms": 1,
+   "state": "none"
+  },
+  {
+   "code": "CC",
+   "name": "Campus Center and Bookstore",
+   "sections": 0,
+   "rooms": 17,
+   "state": "rooms",
+   "note": "No classes, but the busiest building on campus: food, the Closet, the food pantry, the Veterans Resource Center."
+  }
+ ]
+}

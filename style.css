@@ -126,3 +126,8 @@ button{font:inherit;color:inherit}
     border-top:1px solid var(--line);border-radius:16px 16px 0 0}
   .layers{bottom:36px}
 }
+
+table.cov{width:100%;border-collapse:collapse;margin-top:.4em}
+table.cov td{padding:7px 4px;border-bottom:1px solid var(--line);vertical-align:top;font-size:13.5px}
+table.cov td.cc{font-weight:700;white-space:nowrap;width:1%;padding-right:10px}
+table.cov tr:last-child td{border-bottom:0}

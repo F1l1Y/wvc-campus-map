@@ -6,7 +6,7 @@
    every room comes from an official plan or the official schedule, and carries its source. */
 
 const CAMPUS_CENTER = [37.2637, -122.0096];
-const DATA = { buildings: [], rooms: [], plans: {}, amen: null, roomsDoc: null, routes: null, sportLayers: [] };
+const DATA = { buildings: [], rooms: [], plans: {}, amen: null, roomsDoc: null, routes: null, sportLayers: [], coverage: null };
 const $ = (s) => document.querySelector(s);
 
 /* ---------------------------------------------------------------- map */
@@ -59,7 +59,7 @@ fetch("campus.geojson?v=10").then(r => r.json()).then(gj => {
   catch (e) { map.setView(CAMPUS_CENTER, 16); }
   addEventListener("resize", () => map.invalidateSize());
   addEventListener("orientationchange", () => setTimeout(() => map.invalidateSize(), 250));
-  loadRooms(); loadAmenities(); loadRoutes();
+  loadRooms(); loadAmenities(); loadRoutes(); loadCoverage();
 });
 
 /* ------------------------------------------------------------- rooms */
@@ -94,6 +94,9 @@ function loadRooms() {
       });
     }).catch(() => {}));
   });
+}
+function loadCoverage() {
+  fetch("coverage.json?v=10").then(r => r.json()).then(j => { DATA.coverage = j; }).catch(() => {});
 }
 function loadRoutes() {
   fetch("evac_routes.json?v=10").then(r => r.json()).then(j => { DATA.routes = j; }).catch(() => {});
@@ -496,6 +499,29 @@ $("#locate").addEventListener("click", () => {
 });
 
 window.__map = map; window.__DATA = DATA;   // debug handles, no behaviour attached
+
+window.showCoverage = function () {
+  const j = DATA.coverage; if (!j) return;
+  const pct = Math.round(j.sections_with_plan / j.sections_total * 100);
+  const BADGE = { done: ["Room-level", "#e6f4d6", "#3f6b06"],
+                  rooms: ["Rooms listed", "#fdf0d8", "#8a5a10"],
+                  none: ["Building only", "#eef1f6", "#4a5a78"] };
+  let h = `<div class="pad"><div class="eyebrow">Coverage</div><h2>What this map still needs</h2>
+    <p class="sub">A room search lands on the exact room only where a posted floor plan has been
+    photographed. That is <b>${pct}%</b> of West Valley's in-person class sections so far
+    (${j.sections_with_plan} of ${j.sections_total}). Everything else lands on the building.</p>
+    <div class="warn">${esc(j.need)}</div>
+    <h3>In the order that helps most students</h3><table class="cov">`;
+  j.buildings.forEach(b => {
+    const [label, bg, fg] = BADGE[b.state];
+    h += `<tr><td class="cc">${esc(b.code)}</td><td>${esc(b.name)}
+      <div class="sub" style="font-size:12px">${b.sections ? b.sections + " class sections · " : ""}${b.rooms} rooms known</div></td>
+      <td><span class="tagchip" style="background:${bg};color:${fg}">${label}</span></td></tr>`;
+  });
+  h += `</table><div class="src">Class-section counts parsed from the official Fall 2026 Schedule of
+    Classes, so this ordering reflects where students actually are.</div></div>`;
+  openPanel(h);
+};
 
 /* ------------------------------------------------------------- about */
 $("#aboutBtn").addEventListener("click", () => {
