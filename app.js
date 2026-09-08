@@ -59,13 +59,14 @@ fetch("campus.geojson?v=10").then(r => r.json()).then(gj => {
   catch (e) { map.setView(CAMPUS_CENTER, 16); }
   addEventListener("resize", () => map.invalidateSize());
   addEventListener("orientationchange", () => setTimeout(() => map.invalidateSize(), 250));
-  loadRooms(); loadAmenities(); loadRoutes(); loadCoverage();
-  setTimeout(applyDeepLink, 400);
+  loadAmenities(); loadRoutes(); loadCoverage();
+  // deep links must wait for the room index and the plans, not a guessed delay
+  loadRooms().then(applyDeepLink).catch(() => {});
 });
 
 /* ------------------------------------------------------------- rooms */
 function loadRooms() {
-  fetch("rooms.json?v=10").then(r => r.json()).then(j => {
+  return fetch("rooms.json?v=10").then(r => r.json()).then(j => {
     DATA.roomsDoc = j;
     for (const [bcode, b] of Object.entries(j.buildings || {}))
       for (const r of b.rooms)
@@ -80,7 +81,7 @@ function loadRooms() {
                           source: inv.source, kind: "schedule" });
       }
     // plans
-    ["pe"].forEach(id => fetch(`plans/${id}.json?v=10`).then(r => r.json()).then(p => {
+    return Promise.all(["pe"].map(id => fetch(`plans/${id}.json?v=10`).then(r => r.json()).then(p => {
       DATA.plans[p.building] = p;
       p.rooms.forEach((r, idx) => {
         if (!r.code) {
@@ -93,7 +94,7 @@ function loadRooms() {
         else DATA.rooms.push({ code: r.code, name: r.name, bcode: p.building, bname: p.name,
                                source: p.source, kind: "plan" });
       });
-    }).catch(() => {}));
+    }).catch(() => {})));
   });
 }
 function loadCoverage() {
