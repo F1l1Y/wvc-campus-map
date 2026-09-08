@@ -29,7 +29,14 @@ function styleFor(f) {
 const styleOn = { color: C.limeD, weight: 4, fillColor: C.lime, fillOpacity: .55 };
 let selected = [];
 
-fetch("campus.geojson?v=11").then(r => r.json()).then(gj => {
+function dataError(what) {
+  if (document.querySelector(".loaderr")) return;
+  const el = document.createElement("div");
+  el.className = "loaderr"; el.setAttribute("role", "alert");
+  el.innerHTML = `<b>Could not load ${what}.</b> Check your connection and reload.`;
+  document.body.appendChild(el);
+}
+fetch("campus.geojson?v=12").then(r => r.json()).then(gj => {
   const layer = L.geoJSON(gj, {
     style: styleFor,
     onEachFeature: (f, ly) => {
@@ -61,12 +68,12 @@ fetch("campus.geojson?v=11").then(r => r.json()).then(gj => {
   addEventListener("orientationchange", () => setTimeout(() => map.invalidateSize(), 250));
   loadAmenities(); loadRoutes(); loadCoverage();
   // deep links must wait for the room index and the plans, not a guessed delay
-  loadRooms().then(applyDeepLink).catch(() => {});
-});
+  loadRooms().then(applyDeepLink).catch(() => dataError("the room directory"));
+}).catch(() => dataError("the campus outline"));
 
 /* ------------------------------------------------------------- rooms */
 function loadRooms() {
-  return fetch("rooms.json?v=11").then(r => r.json()).then(j => {
+  return fetch("rooms.json?v=12").then(r => r.json()).then(j => {
     DATA.roomsDoc = j;
     for (const [bcode, b] of Object.entries(j.buildings || {}))
       for (const r of b.rooms)
@@ -81,7 +88,7 @@ function loadRooms() {
                           source: inv.source, kind: "schedule" });
       }
     // plans
-    return Promise.all(["pe"].map(id => fetch(`plans/${id}.json?v=11`).then(r => r.json()).then(p => {
+    return Promise.all(["pe"].map(id => fetch(`plans/${id}.json?v=12`).then(r => r.json()).then(p => {
       DATA.plans[p.building] = p;
       p.rooms.forEach((r, idx) => {
         if (!r.code) {
@@ -98,13 +105,13 @@ function loadRooms() {
   });
 }
 function loadCoverage() {
-  fetch("coverage.json?v=11").then(r => r.json()).then(j => { DATA.coverage = j; }).catch(() => {});
+  fetch("coverage.json?v=12").then(r => r.json()).then(j => { DATA.coverage = j; }).catch(() => {});
 }
 function loadRoutes() {
-  fetch("evac_routes.json?v=11").then(r => r.json()).then(j => { DATA.routes = j; }).catch(() => {});
+  fetch("evac_routes.json?v=12").then(r => r.json()).then(j => { DATA.routes = j; }).catch(() => {});
 }
 function loadAmenities() {
-  fetch("amenities.json?v=11").then(r => r.json()).then(j => { DATA.amen = j; buildAmenityLayers(j); });
+  fetch("amenities.json?v=12").then(r => r.json()).then(j => { DATA.amen = j; buildAmenityLayers(j); });
 }
 function buildingByCode(code) {
   const n = norm(code);
@@ -195,7 +202,7 @@ function renderResults() {
     results.innerHTML = typed
       ? `<li class="empty">No match for <b>${esc(typed)}</b>. Room codes look like <b>PE 10</b>, <b>LASS 30</b>, <b>LRC 141</b>. If it is a real room that is missing, the plan for that building has not been captured yet.</li>`
       : "";
-    results.hidden = !typed; return;
+    results.hidden = !typed; q.setAttribute("aria-expanded", String(!!typed)); return;
   }
   results.innerHTML = hits.map((h, i) => {
     if (h.kind === "building")
@@ -210,7 +217,7 @@ function renderResults() {
     return `<li role="option" data-i="${i}"><span class="code">${esc(r.code || r.label)}</span>
       <span class="sub">${esc(r.code ? (r.name || r.bname) : r.bcode + " · " + r.bname)}</span>${tag}</li>`;
   }).join("");
-  results.hidden = false;
+  results.hidden = false; q.setAttribute("aria-expanded", "true");
   results.querySelectorAll("li[data-i]").forEach(li =>
     li.addEventListener("click", () => choose(hits[+li.dataset.i])));
 }
@@ -234,7 +241,7 @@ clearBtn.addEventListener("click", () => { q.value = ""; clearBtn.hidden = true;
 document.addEventListener("click", e => { if (!e.target.closest(".search")) results.hidden = true; });
 
 function choose(h) {
-  results.hidden = true; q.blur();
+  results.hidden = true; q.setAttribute("aria-expanded", "false"); q.blur();
   if (h.kind === "topic") showTopic(h.topic);
   else if (h.kind === "building") showBuilding(h.b, h.partial);
   else showRoom(h.r);
@@ -277,7 +284,11 @@ let routeLayer = null;
 function showRoute(code, name) {
   const j = DATA.routes; if (!j) return;
   const r = j.routes.find(x => (code && x.code === code) || x.name === name);
-  if (!r) { alert("No evacuation route for this building yet."); return; }
+  if (!r) {
+    const box = document.getElementById("routeInfo");
+    if (box) box.textContent = "No evacuation route for this building yet.";
+    return;
+  }
   if (routeLayer) routeLayer.remove();
   const line = r.path.map(p => [p[1], p[0]]);
   routeLayer = L.layerGroup([
@@ -305,7 +316,14 @@ window.evacRoute = (code, name) => {
 const panel = $("#panel"), panelBody = $("#panelBody");
 $("#panelClose").addEventListener("click", closePanel);
 function closePanel() { panel.hidden = true; clearRoute(); }
-function openPanel(html) { panelBody.innerHTML = html; panel.hidden = false; panel.scrollTop = 0; }
+function openPanel(html) {
+  panelBody.innerHTML = html; panel.hidden = false; panel.scrollTop = 0;
+  const h = panelBody.querySelector("h2");
+  if (h) { h.setAttribute("tabindex", "-1"); h.focus({ preventScroll: true }); }
+}
+document.addEventListener("keydown", e => {
+  if (e.key === "Escape" && !panel.hidden && !e.target.closest(".search")) { closePanel(); q.focus(); }
+});
 function esc(s) { return String(s ?? "").replace(/[&<>"]/g, c => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;" }[c])); }
 
 function flyTo(b, zoom = 18) {
@@ -400,7 +418,8 @@ function planSVG(plan, highlight) {
              data-name="${esc(r.name || "")}" data-i="${i}"><title>${esc(r.code || r.name)}${r.name && r.code ? " · " + esc(r.name) : ""}</title></polygon>` +
       (showLabel && short ? `<text class="plabel" x="${cx}" y="${cy}" text-anchor="middle" dominant-baseline="central" style="font-size:${fs}px">${esc(short)}</text>` : "");
   }).join("");
-  return `<svg viewBox="0 0 ${plan.width} ${plan.height}" preserveAspectRatio="xMidYMid meet" id="plansvg">
+  return `<svg viewBox="0 0 ${plan.width} ${plan.height}" preserveAspectRatio="xMidYMid meet" id="plansvg"
+      role="img" aria-label="Floor plan of ${esc(plan.name)}, ${plan.rooms.length} spaces${highlight ? ", " + esc(highlight) + " highlighted" : ""}">
       <g id="plang">${rooms}</g></svg>`;
 }
 function applyPlanTransform() {
@@ -562,6 +581,9 @@ $("#aboutBtn").addEventListener("click", () => {
     <p>${a ? a.items.length : "—"} points digitised from the pictograms printed on that same official map,
        then transformed onto the surveyed footprints by a ${a ? a.fit.method : ""}.
        Measured accuracy: <b>mean ${a ? a.fit.mean_residual_m : "—"} m, worst ${a ? a.fit.max_residual_m : "—"} m</b>.</p>
+    <p>Checked against data the fit never saw: 72% of parking symbols land inside a surveyed
+       parking polygon, AEDs sit a median 10.6 m from a building outline (right for a unit on an
+       exterior wall), restrooms 11.4 m.</p>
     <h3>Rooms</h3>
     <p>Physical Education: the posted plan, sheet 23-2A Rev. 9/90, redrawn as real geometry.<br>
        Campus Center: the posted plan dated August 2026.<br>
