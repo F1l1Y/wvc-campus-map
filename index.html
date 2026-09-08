@@ -7,7 +7,7 @@
 <meta name="description" content="Interactive map of West Valley College: every building, room search, floor plans, restrooms, AEDs and evacuation sites. Built by the AI Builders Club.">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"
       integrity="sha512-h9FcoyWjHcOcmEVkxOfTLnmZFWIH0iZhZT1H2TbOq55xssQGEJHEaIm+PgoUaZbRvQTNTluNOEfb1ZRy6D3BOw==" crossorigin="anonymous" referrerpolicy="no-referrer">
-<link rel="stylesheet" href="style.css?v=32">
+<link rel="stylesheet" href="style.css?v=35">
 </head>
 <body>
 
@@ -28,6 +28,7 @@
   </form>
 
   <div class="actions">
+    <button id="demoBtn" type="button" class="pill demo" aria-pressed="false" onclick="demoStart()">▶ Demo</button>
     <button id="locate" type="button" class="pill">Where am I</button>
   </div>
 </header>
@@ -42,6 +43,8 @@
   <button data-layer="parking" class="chip">Parking</button>
   <button data-layer="ev_charger" class="chip">EV</button>
 </nav>
+
+<div id="demobar" class="demobar" hidden aria-live="polite"></div>
 
 <aside id="panel" class="panel" hidden aria-live="polite">
   <button id="panelClose" class="panelClose" type="button" aria-label="Close">&times;</button>
@@ -60,6 +63,6 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"
         integrity="sha512-puJW3E/qXDqYp9IfhAI54BJEaWIfloJ7JWs7OeD5i6ruC9JZL1gERT1wjtwXFlh7CjE7ZJ+/vcRZRkIYIb6p4g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-<script src="app.js?v=32"></script>
+<script src="app.js?v=35"></script>
 </body>
 </html>

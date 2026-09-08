@@ -38,7 +38,7 @@ function dataError(what) {
   el.innerHTML = `<b>Could not load ${what}.</b> Check your connection and reload.`;
   document.body.appendChild(el);
 }
-fetch("campus.geojson?v=32").then(r => r.json()).then(gj => {
+fetch("campus.geojson?v=35").then(r => r.json()).then(gj => {
   const layer = L.geoJSON(gj, {
     style: styleFor,
     onEachFeature: (f, ly) => {
@@ -75,7 +75,7 @@ fetch("campus.geojson?v=32").then(r => r.json()).then(gj => {
 
 /* ------------------------------------------------------------- rooms */
 function loadRooms() {
-  return fetch("rooms.json?v=32").then(r => r.json()).then(j => {
+  return fetch("rooms.json?v=35").then(r => r.json()).then(j => {
     DATA.roomsDoc = j;
     for (const [bcode, b] of Object.entries(j.buildings || {}))
       for (const r of b.rooms)
@@ -90,7 +90,7 @@ function loadRooms() {
                           source: inv.source, kind: "schedule" });
       }
     // plans
-    return Promise.all(["pe","lrc"].map(id => fetch(`plans/${id}.json?v=32`).then(r => r.json()).then(p => {
+    return Promise.all(["pe","lrc"].map(id => fetch(`plans/${id}.json?v=35`).then(r => r.json()).then(p => {
       DATA.plans[p.building] = p;
       p.rooms.forEach((r, idx) => {
         if (!r.code) {
@@ -123,7 +123,7 @@ function loadRooms() {
   });
 }
 function loadWalk() {
-  fetch("walkgraph.json?v=32").then(r => r.json()).then(j => {
+  fetch("walkgraph.json?v=35").then(r => r.json()).then(j => {
     DATA.walk = j;
     j.adj = Array.from({ length: j.lat.length }, () => []);
     j.edges.forEach(([a, b]) => {
@@ -133,13 +133,13 @@ function loadWalk() {
   }).catch(() => {});
 }
 function loadCoverage() {
-  fetch("coverage.json?v=32").then(r => r.json()).then(j => { DATA.coverage = j; }).catch(() => {});
+  fetch("coverage.json?v=35").then(r => r.json()).then(j => { DATA.coverage = j; }).catch(() => {});
 }
 function loadRoutes() {
-  fetch("evac_routes.json?v=32").then(r => r.json()).then(j => { DATA.routes = j; }).catch(() => {});
+  fetch("evac_routes.json?v=35").then(r => r.json()).then(j => { DATA.routes = j; }).catch(() => {});
 }
 function loadAmenities() {
-  fetch("amenities.json?v=32").then(r => r.json()).then(j => { DATA.amen = j; buildAmenityLayers(j); });
+  fetch("amenities.json?v=35").then(r => r.json()).then(j => { DATA.amen = j; buildAmenityLayers(j); });
 }
 function buildingByCode(code) {
   const n = norm(code);
@@ -153,7 +153,7 @@ function buildIndoor(plan) {
   if (!plan.georef || !plan.image) return;
   const g = plan.georef.image_bounds;
   const bounds = L.latLngBounds([g.south, g.west], [g.north, g.east]);
-  const overlay = L.imageOverlay(plan.image + "?v=32", bounds, {
+  const overlay = L.imageOverlay(plan.image + "?v=35", bounds, {
     opacity: .92, interactive: false, alt: `Floor plan of ${plan.name}`, className: "planoverlay" });
   const rooms = {}, group = L.layerGroup();
   plan.rooms.forEach(r => {
@@ -531,8 +531,14 @@ function frameOn(bounds, maxZoom, animate = true, tries = 0) {
   const c = map.project(bounds.getCenter(), z);
   c.y += sheet / 2;                       // lift the target into the visible strip
   const target = map.unproject(c, z);
-  // setView lands exactly; flyTo can be knocked off target by a fly still in flight
-  map.setView(target, z, { animate, duration: .5 });
+  // setView lands exactly; flyTo can be knocked off target by a fly still in flight.
+  // Leaflet declines to animate a large zoom change and can then leave the view untouched,
+  // so big jumps go un-animated and every call is verified a moment later.
+  const jump = Math.abs(map.getZoom() - z) > 3;
+  map.setView(target, z, { animate: animate && !jump, duration: .5 });
+  setTimeout(() => {
+    if (Math.abs(map.getZoom() - z) > 0.01) map.setView(target, z, { animate: false });
+  }, animate && !jump ? 620 : 60);
 }
 function fitPad(base) { return { padding: [base, base] }; }
 let reframeTimer = null;
@@ -655,7 +661,7 @@ function planSVG(plan, highlight) {
              data-name="${esc(r.name || "")}" data-i="${i}"><title>${esc(r.code || r.name)}${r.name && r.code ? " · " + esc(r.name) : ""}</title></polygon>` +
       (showLabel && short ? `<text class="plabel" x="${cx}" y="${cy}" text-anchor="middle" dominant-baseline="central" style="font-size:${fs}px">${esc(short)}</text>` : "");
   }).join("");
-  const img = raster ? `<image href="${esc(plan.image)}?v=32" x="0" y="0" width="${plan.width}"
+  const img = raster ? `<image href="${esc(plan.image)}?v=35" x="0" y="0" width="${plan.width}"
       height="${plan.height}" preserveAspectRatio="none"/>` : "";
   return `<svg viewBox="0 0 ${plan.width} ${plan.height}" preserveAspectRatio="xMidYMid meet" id="plansvg"
       role="img" aria-label="Floor plan of ${esc(plan.name)}, ${plan.rooms.length} spaces${highlight ? ", " + esc(highlight) + " highlighted" : ""}">
@@ -748,6 +754,7 @@ window.openPlan = openPlan; window.planZoom = planZoom; window.planReset = planR
 /* ------------------------------------------------------- deep links */
 function applyDeepLink() {
   const u = new URLSearchParams(location.search);
+  if (u.get("demo")) { setTimeout(() => window.demoStart(), 600); return; }
   const r = u.get("r"), b = u.get("b");
   if (r) {
     const hit = DATA.rooms.find(x => norm(x.code) === norm(r));
@@ -790,7 +797,8 @@ $("#locate").addEventListener("click", () => {
 });
 
 window.__map = map; window.__DATA = DATA;   // debug handles, no behaviour attached
-window.__dbg = { get focusTarget() { return focusTarget; }, refocus, frameOn, indoor, sheetHeight };
+window.__dbg = { get focusTarget() { return focusTarget; }, refocus, frameOn, indoor, sheetHeight,
+                 demoJump: (i) => { demoStop(); demoIx = i - 1; demoTick(); } };
 
 window.showCoverage = function () {
   const j = DATA.coverage; if (!j) return;
@@ -814,6 +822,96 @@ window.showCoverage = function () {
     Classes, so this ordering reflects where students actually are.</div></div>`;
   openPanel(h);
 };
+
+
+/* ============================ LRC demo tour ================================
+   A hands-free walkthrough for a demo table: no typing, and no geolocation
+   prompt (the walk leg starts from a fixed point on campus, stated on screen).
+   Start with the Demo button or ?demo=lrc. Esc or the Stop button ends it. */
+const DEMO_START = [37.263195, -122.011152];   // Campus Center, a fixed origin
+const DEMO_STEPS = [
+  { ms: 4200, title: "West Valley College, mapped",
+    note: "23 buildings, 199 searchable rooms, every one carrying the source it came from.",
+    run: () => { closePanel(); hideIndoor(); clearWalk();
+      const g = L.featureGroup(DATA.buildings.map(b => b.layer).concat(DATA.sportLayers));
+      frameOn(g.getBounds(), 17, true); } },
+  { ms: 4600, title: "Two buildings have their floor plan",
+    note: "Physical Education and the Learning Resource Commons. The rest need one photo each.",
+    run: () => { const g = L.featureGroup(DATA.buildings.filter(b => DATA.plans[b.code]).map(b => b.layer));
+      frameOn(g.getBounds(), 17, true); } },
+  { ms: 5200, title: "Search a room: LRC 141",
+    note: "The map goes to the room itself, not just the building.",
+    run: () => demoRoom("LRC 141") },
+  { ms: 5200, title: "The plan sits on the real building",
+    note: "Photographed off the LRC's own wayfinding screen, straightened, and placed to about 4 m.",
+    run: () => demoRoom("LRC 143") },
+  { ms: 4800, title: "Every room is clickable",
+    note: "LRC 164, the Maker Space, in the north-east corner.",
+    run: () => demoRoom("LRC 164") },
+  { ms: 4800, title: "Including the big ones",
+    note: "LRC 156 seats 90. Corridors, doors and exits are the building's own drawing.",
+    run: () => demoRoom("LRC 156") },
+  { ms: 6000, title: "And how to walk there",
+    note: "Routed over 1,701 surveyed campus path nodes, in your browser. From the Campus Center here.",
+    run: () => demoWalk("LRC") },
+  { ms: 5200, title: "Built overnight by the AI Builders Club",
+    note: "Nothing on this map is placed by eye. Tap What's missing to see the gaps.",
+    run: () => { closePanel(); hideIndoor(); clearWalk();
+      const g = L.featureGroup(DATA.buildings.map(b => b.layer).concat(DATA.sportLayers));
+      frameOn(g.getBounds(), 17, true); } },
+];
+function demoRoom(code) {
+  const r = DATA.rooms.find(x => norm(x.code) === norm(code));
+  if (!r) return;
+  q.value = r.code; clearBtn.hidden = false;
+  showRoom(r);
+  setTimeout(refocus, 420);
+}
+function demoWalk(bcode) {
+  const j = DATA.walk, entry = j && j.entries[bcode];
+  if (!entry) return;
+  const start = nearestNode(DEMO_START[0], DEMO_START[1]);
+  const res = start && shortestPath(start.node, entry.nodes);
+  if (!res) return;
+  clearWalk(); clearRoute();
+  const line = res.path, mins = Math.max(1, Math.round(res.metres / 78));
+  walkLayer = L.layerGroup([
+    L.polyline(line, { color: "#ffffff", weight: 11, opacity: .95 }),
+    L.polyline(line, { color: "#0e9fbd", weight: 5, opacity: 1, lineCap: "round" }),
+    L.circleMarker(line[0], { radius: 8, color: "#fff", weight: 3, fillColor: "#0f172a", fillOpacity: 1 })
+      .bindTooltip("Campus Center", { permanent: true, direction: "top" }),
+    L.circleMarker(line[line.length - 1], { radius: 9, color: "#fff", weight: 3, fillColor: "#8fce2a", fillOpacity: 1 })
+      .bindTooltip(`LRC · ${Math.round(res.metres)} m, ${mins} min`, { permanent: true, direction: "top" }),
+  ]).addTo(map);
+  frameOn(L.polyline(line).getBounds(), 19, true);
+}
+let demoTimer = null, demoIx = -1;
+function demoStop() {
+  clearTimeout(demoTimer); demoTimer = null; demoIx = -1;
+  const bar = document.getElementById("demobar"); if (bar) bar.hidden = true;
+  document.getElementById("demoBtn").setAttribute("aria-pressed", "false");
+  clearWalk(); hideIndoor(); closePanel();
+}
+function demoTick() {
+  results.hidden = true; q.blur();          // never leave the suggestion list open on screen
+  demoIx = (demoIx + 1) % DEMO_STEPS.length;
+  const st = DEMO_STEPS[demoIx], bar = document.getElementById("demobar");
+  bar.hidden = false;
+  bar.innerHTML =
+    `<div class="dstep">${demoIx + 1}/${DEMO_STEPS.length}</div>
+     <div class="dtext"><b>${esc(st.title)}</b><span>${esc(st.note)}</span></div>
+     <button class="dstop" onclick="demoStop()">Stop</button>
+     <div class="dbar"><i style="animation-duration:${st.ms}ms"></i></div>`;
+  try { st.run(); } catch (e) {}
+  demoTimer = setTimeout(demoTick, st.ms);
+}
+window.demoStop = demoStop;
+window.demoStart = function () {
+  if (demoTimer) { demoStop(); return; }
+  document.getElementById("demoBtn").setAttribute("aria-pressed", "true");
+  demoIx = -1; demoTick();
+};
+document.addEventListener("keydown", e => { if (e.key === "Escape" && demoTimer) demoStop(); });
 
 /* ------------------------------------------------------------- about */
 $("#aboutBtn").addEventListener("click", () => {
