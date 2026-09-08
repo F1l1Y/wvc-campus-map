@@ -6,7 +6,7 @@
  "height": 1590,
  "floor": "Main floor, as shown on the building's own wayfinding display",
  "source": "Photograph of the LRC wayfinding display taken in the building 2026-09-02 11:24 (the screen is headed 'Welcome to the LRC' and dated Wednesday 02 September 2026). The photo was taken at an angle to the screen and has been perspective-corrected (the four screen corners mapped square) so the plan is square-on. Room boxes were traced on the corrected image and each was checked against the room number printed inside it.",
- "caution": "This is the building's own display, so it is current, but the green and pink shading on it was live room-booking status at 11:24 that morning, not part of the building. 24 of the 26 known rooms are outlined; LRC 156 and 171 are listed but not yet outlined because their labels sit outside the shaded area and I would be guessing.",
+ "caution": "This is the building's own display, so it is current. The green and pink shading on it was live room-booking status at 11:24 that morning, not part of the building. Every room the display labels with an LRC number is now outlined.",
  "rooms": [
   {
    "code": "LRC 102",
@@ -120,29 +120,6 @@
     [
      656,
      675
-    ]
-   ]
-  },
-  {
-   "code": "LRC 108B",
-   "name": "Conference Room",
-   "kind": "room",
-   "poly": [
-    [
-     779,
-     813
-    ],
-    [
-     878,
-     813
-    ],
-    [
-     878,
-     895
-    ],
-    [
-     779,
-     895
     ]
    ]
   },
@@ -446,6 +423,52 @@
    ]
   },
   {
+   "code": "LRC 156",
+   "name": "Large tech room",
+   "kind": "room",
+   "poly": [
+    [
+     1367,
+     864
+    ],
+    [
+     1550,
+     864
+    ],
+    [
+     1550,
+     1045
+    ],
+    [
+     1367,
+     1045
+    ]
+   ]
+  },
+  {
+   "code": "LRC 157",
+   "name": "Large tech room",
+   "kind": "room",
+   "poly": [
+    [
+     1550,
+     864
+    ],
+    [
+     1740,
+     864
+    ],
+    [
+     1740,
+     1045
+    ],
+    [
+     1550,
+     1045
+    ]
+   ]
+  },
+  {
    "code": "LRC 162",
    "name": "Large tech training room",
    "kind": "room",
@@ -538,25 +561,71 @@
    ]
   },
   {
+   "code": "LRC 171",
+   "name": "Production Studio",
+   "kind": "room",
+   "poly": [
+    [
+     2135,
+     475
+    ],
+    [
+     2327,
+     475
+    ],
+    [
+     2327,
+     668
+    ],
+    [
+     2135,
+     668
+    ]
+   ]
+  },
+  {
    "code": "LRC 179",
    "name": "Large tech training room",
    "kind": "room",
    "poly": [
     [
-     1750,
-     863
+     1755,
+     864
     ],
     [
-     2061,
-     863
+     1952,
+     864
     ],
     [
-     2061,
-     1071
+     1952,
+     1045
     ],
     [
-     1750,
-     1071
+     1755,
+     1045
+    ]
+   ]
+  },
+  {
+   "code": "LRC 108B",
+   "name": "Conference Room",
+   "kind": "room",
+   "poly": [
+    [
+     779,
+     813
+    ],
+    [
+     878,
+     813
+    ],
+    [
+     878,
+     895
+    ],
+    [
+     779,
+     895
     ]
    ]
   }

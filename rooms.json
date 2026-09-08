@@ -215,12 +215,6 @@
      "confirmed_by": "westvalley.libcal.com booking system, checked 2026-09-08"
     },
     {
-     "code": "LRC 108B",
-     "name": "Conference room",
-     "capacity": 10,
-     "zone": "Centre-west, by Open Work"
-    },
-    {
      "code": "LRC 109",
      "name": "Group study room",
      "capacity": 6,
@@ -313,6 +307,11 @@
      "zone": "East, lower"
     },
     {
+     "code": "LRC 157",
+     "name": "Large tech room",
+     "zone": "East, lower"
+    },
+    {
      "code": "LRC 162",
      "name": "Group room",
      "capacity": 30,
@@ -336,15 +335,21 @@
      "zone": "North-east, by the Recording Studio"
     },
     {
+     "code": "LRC 171",
+     "name": "Room",
+     "zone": "East (from the Fall 2026 class schedule; not labelled on the display)"
+    },
+    {
      "code": "LRC 179",
      "name": "Group room",
      "capacity": 40,
      "zone": "East, lower"
     },
     {
-     "code": "LRC 171",
-     "name": "Room",
-     "zone": "East (from the Fall 2026 class schedule; not labelled on the display)"
+     "code": "LRC 108B",
+     "name": "Conference room",
+     "capacity": 10,
+     "zone": "Centre-west, by Open Work"
     }
    ],
    "spaces_without_numbers": [

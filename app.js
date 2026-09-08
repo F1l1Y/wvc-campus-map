@@ -6,7 +6,7 @@
    every room comes from an official plan or the official schedule, and carries its source. */
 
 const CAMPUS_CENTER = [37.2637, -122.0096];
-const DATA = { buildings: [], rooms: [], plans: {}, amen: null, roomsDoc: null, routes: null, sportLayers: [], coverage: null };
+const DATA = { buildings: [], rooms: [], plans: {}, amen: null, roomsDoc: null, routes: null, sportLayers: [], coverage: null, walk: null };
 const $ = (s) => document.querySelector(s);
 
 /* ---------------------------------------------------------------- map */
@@ -36,7 +36,7 @@ function dataError(what) {
   el.innerHTML = `<b>Could not load ${what}.</b> Check your connection and reload.`;
   document.body.appendChild(el);
 }
-fetch("campus.geojson?v=17").then(r => r.json()).then(gj => {
+fetch("campus.geojson?v=21").then(r => r.json()).then(gj => {
   const layer = L.geoJSON(gj, {
     style: styleFor,
     onEachFeature: (f, ly) => {
@@ -66,14 +66,14 @@ fetch("campus.geojson?v=17").then(r => r.json()).then(gj => {
   catch (e) { map.setView(CAMPUS_CENTER, 16); }
   addEventListener("resize", () => map.invalidateSize());
   addEventListener("orientationchange", () => setTimeout(() => map.invalidateSize(), 250));
-  loadAmenities(); loadRoutes(); loadCoverage();
+  loadAmenities(); loadRoutes(); loadCoverage(); loadWalk();
   // deep links must wait for the room index and the plans, not a guessed delay
   loadRooms().then(applyDeepLink).catch(() => dataError("the room directory"));
 }).catch(() => dataError("the campus outline"));
 
 /* ------------------------------------------------------------- rooms */
 function loadRooms() {
-  return fetch("rooms.json?v=17").then(r => r.json()).then(j => {
+  return fetch("rooms.json?v=21").then(r => r.json()).then(j => {
     DATA.roomsDoc = j;
     for (const [bcode, b] of Object.entries(j.buildings || {}))
       for (const r of b.rooms)
@@ -88,7 +88,7 @@ function loadRooms() {
                           source: inv.source, kind: "schedule" });
       }
     // plans
-    return Promise.all(["pe","lrc"].map(id => fetch(`plans/${id}.json?v=17`).then(r => r.json()).then(p => {
+    return Promise.all(["pe","lrc"].map(id => fetch(`plans/${id}.json?v=21`).then(r => r.json()).then(p => {
       DATA.plans[p.building] = p;
       p.rooms.forEach((r, idx) => {
         if (!r.code) {
@@ -104,14 +104,24 @@ function loadRooms() {
     }).catch(() => {})));
   });
 }
+function loadWalk() {
+  fetch("walkgraph.json?v=21").then(r => r.json()).then(j => {
+    DATA.walk = j;
+    j.adj = Array.from({ length: j.lat.length }, () => []);
+    j.edges.forEach(([a, b]) => {
+      const w = metres(j.lat[a], j.lon[a], j.lat[b], j.lon[b]);
+      j.adj[a].push([b, w]); j.adj[b].push([a, w]);
+    });
+  }).catch(() => {});
+}
 function loadCoverage() {
-  fetch("coverage.json?v=17").then(r => r.json()).then(j => { DATA.coverage = j; }).catch(() => {});
+  fetch("coverage.json?v=21").then(r => r.json()).then(j => { DATA.coverage = j; }).catch(() => {});
 }
 function loadRoutes() {
-  fetch("evac_routes.json?v=17").then(r => r.json()).then(j => { DATA.routes = j; }).catch(() => {});
+  fetch("evac_routes.json?v=21").then(r => r.json()).then(j => { DATA.routes = j; }).catch(() => {});
 }
 function loadAmenities() {
-  fetch("amenities.json?v=17").then(r => r.json()).then(j => { DATA.amen = j; buildAmenityLayers(j); });
+  fetch("amenities.json?v=21").then(r => r.json()).then(j => { DATA.amen = j; buildAmenityLayers(j); });
 }
 function buildingByCode(code) {
   const n = norm(code);
@@ -279,6 +289,92 @@ function showTopic(type) {
   openPanel(h);
 }
 
+const MPD_LAT = 111320, MPD_LON = 111320 * Math.cos(37.2637 * Math.PI / 180);
+function metres(la1, lo1, la2, lo2) {
+  return Math.hypot((lo2 - lo1) * MPD_LON, (la2 - la1) * MPD_LAT);
+}
+function nearestNode(lat, lon) {
+  const j = DATA.walk; if (!j) return null;
+  let best = -1, bd = Infinity;
+  for (let i = 0; i < j.lat.length; i++) {
+    const d = metres(lat, lon, j.lat[i], j.lon[i]);
+    if (d < bd) { bd = d; best = i; }
+  }
+  return { node: best, dist: bd };
+}
+function shortestPath(from, to) {
+  const j = DATA.walk; if (!j) return null;
+  const n = j.lat.length, dist = new Float64Array(n).fill(Infinity), prev = new Int32Array(n).fill(-1);
+  const done = new Uint8Array(n); dist[from] = 0;
+  // simple binary heap
+  const heap = [[0, from]];
+  const push = (v) => { heap.push(v); let i = heap.length - 1;
+    while (i > 0) { const p = (i - 1) >> 1; if (heap[p][0] <= heap[i][0]) break;
+      [heap[p], heap[i]] = [heap[i], heap[p]]; i = p; } };
+  const pop = () => { const top = heap[0], last = heap.pop();
+    if (heap.length) { heap[0] = last; let i = 0;
+      for (;;) { const l = 2*i+1, r = l+1; let m = i;
+        if (l < heap.length && heap[l][0] < heap[m][0]) m = l;
+        if (r < heap.length && heap[r][0] < heap[m][0]) m = r;
+        if (m === i) break; [heap[m], heap[i]] = [heap[i], heap[m]]; i = m; } }
+    return top; };
+  while (heap.length) {
+    const [d, u] = pop();
+    if (done[u]) continue; done[u] = 1;
+    if (u === to) break;
+    for (const [v, w] of j.adj[u]) {
+      const nd = d + w;
+      if (nd < dist[v]) { dist[v] = nd; prev[v] = u; push([nd, v]); }
+    }
+  }
+  if (!isFinite(dist[to])) return null;
+  const path = []; let cur = to;
+  while (cur !== -1) { path.push([j.lat[cur], j.lon[cur]]); cur = prev[cur]; }
+  path.reverse();
+  return { path, metres: dist[to] };
+}
+
+/* --------------------------------------------- walking directions to a room */
+let walkLayer = null;
+function clearWalk() { if (walkLayer) { walkLayer.remove(); walkLayer = null; } }
+window.walkTo = function (bcode, roomCode) {
+  const box = document.getElementById("walkInfo");
+  const j = DATA.walk;
+  if (!j) { if (box) box.textContent = "The walking network is still loading."; return; }
+  const entry = j.entries[bcode];
+  if (!entry) { if (box) box.textContent = "No walking route to this building yet."; return; }
+  if (!navigator.geolocation) { if (box) box.textContent = "This browser cannot provide your location."; return; }
+  if (box) box.textContent = "Finding you...";
+  navigator.geolocation.getCurrentPosition(pos => {
+    const me = [pos.coords.latitude, pos.coords.longitude];
+    const start = nearestNode(me[0], me[1]);
+    if (!start) return;
+    const r = shortestPath(start.node, entry.node);
+    if (!r) { if (box) box.textContent = "No path found from where you are."; return; }
+    clearWalk(); clearRoute();
+    const line = r.path;
+    const mins = Math.max(1, Math.round(r.metres / 78));   // ~1.3 m/s walking
+    walkLayer = L.layerGroup([
+      L.polyline(line, { color: "#ffffff", weight: 10, opacity: .95 }),
+      L.polyline(line, { color: "#0e9fbd", weight: 5, opacity: 1, lineCap: "round" }),
+      L.polyline([me, line[0]], { color: "#0e9fbd", weight: 3, opacity: .8, dashArray: "3 7" }),
+      L.circleMarker(me, { radius: 8, color: "#fff", weight: 3, fillColor: "#0f172a", fillOpacity: 1 })
+        .bindPopup("You are here"),
+      L.circleMarker(line[line.length - 1], { radius: 9, color: "#fff", weight: 3, fillColor: "#8fce2a", fillOpacity: 1 })
+        .bindPopup(`<b>${esc(bcode)}</b><br>${esc(entry.name)}`),
+    ]).addTo(map);
+    const sz = map.getSize();
+    if (sz.x > 40 && sz.y > 40)
+      frameOn(L.polyline(line.concat([me])).getBounds(), 19);
+    if (box) box.innerHTML =
+      `<b>${Math.round(r.metres)} m, about ${mins} min walk</b> to ${esc(bcode)}, on campus paths.` +
+      (roomCode ? ` Then ${esc(roomCode)} is marked on the plan below.` : "") +
+      `<br><small style="color:#8b97ad">Route ends at the path nearest the building
+       (${entry.d} m from its wall). Door-level entrances are not captured yet.</small>`;
+  }, () => { if (box) box.textContent = "Could not get your location. Check the browser's location permission."; },
+     { enableHighAccuracy: true, timeout: 12000 });
+};
+
 /* -------------------------------------------------- evacuation route */
 let routeLayer = null;
 function showRoute(code, name) {
@@ -315,7 +411,7 @@ window.evacRoute = (code, name) => {
 /* ------------------------------------------------------------- panel */
 const panel = $("#panel"), panelBody = $("#panelBody");
 $("#panelClose").addEventListener("click", closePanel);
-function closePanel() { panel.hidden = true; clearRoute(); }
+function closePanel() { panel.hidden = true; clearRoute(); clearWalk(); }
 function openPanel(html) {
   panelBody.innerHTML = html; panel.hidden = false; panel.scrollTop = 0;
   const h = panelBody.querySelector("h2");
@@ -329,6 +425,37 @@ document.addEventListener("keydown", e => {
 });
 function esc(s) { return String(s ?? "").replace(/[&<>"]/g, c => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;" }[c])); }
 
+function sheetHeight() {
+  // height of the bottom sheet that covers the map on a phone (0 on desktop, where it is a sidebar)
+  const sz = map.getSize();
+  if (panel.hidden || window.innerWidth > 820) return 0;
+  return Math.min(Math.round(panel.getBoundingClientRect().height), Math.max(0, sz.y - 170));
+}
+// Frame a set of bounds in the part of the map the sheet does not cover.
+// Leaflet's own padding options collapse to minZoom once the padding approaches the map
+// height, so the centre and zoom are computed here instead.
+function frameOn(bounds, maxZoom, animate = true) {
+  const sz = map.getSize();
+  if (sz.x < 60 || sz.y < 60) return;
+  const sheet = sheetHeight(), M = 34;
+  let z = map.getBoundsZoom(bounds, false, L.point(M * 2, sheet + M * 2));
+  z = Math.max(map.getMinZoom(), Math.min(z, maxZoom));
+  const c = map.project(bounds.getCenter(), z);
+  c.y += sheet / 2;                       // lift the target into the visible strip
+  const target = map.unproject(c, z);
+  // setView lands exactly; flyTo can be knocked off target by a fly still in flight
+  map.setView(target, z, { animate, duration: .5 });
+}
+function fitPad(base) { return { padding: [base, base] }; }
+let reframeTimer = null;
+function reframe(b, zoom) {
+  clearTimeout(reframeTimer);
+  // the sheet grows as the plan image decodes, so measure again once it has settled
+  reframeTimer = setTimeout(() => {
+    const grp = L.featureGroup((selected.length ? selected : [b]).map(x => x.layer));
+    try { frameOn(grp.getBounds(), zoom, false); } catch (e) {}
+  }, 420);
+}
 function flyTo(b, zoom = 18) {
   selected.forEach(x => x.layer.setStyle(styleFor({ properties: { kind: "building", name: x.name } })));
   // a building code can cover several footprints (PE and CHE each have more than one)
@@ -338,14 +465,13 @@ function flyTo(b, zoom = 18) {
   const sz = map.getSize();
   // a zero-sized container (some embedded/headless viewports) makes flyToBounds produce NaN
   if (sz.x > 40 && sz.y > 40) {
-    try { map.flyToBounds(grp.getBounds(), { padding: [70, 70], maxZoom: zoom, duration: .6 }); return; }
+    try { frameOn(grp.getBounds(), zoom); reframe(b, zoom); return; }
     catch (e) { /* fall through to a plain setView */ }
   }
   map.setView(b.center, Math.min(zoom, 18));
 }
 
 function showBuilding(b, partial) {
-  flyTo(b);
   const dir = DATA.roomsDoc?.buildings?.[b.code];
   const inv = DATA.roomsDoc?.schedule_inventory?.buildings?.[b.code] || [];
   const plan = DATA.plans[b.code];
@@ -356,8 +482,10 @@ function showBuilding(b, partial) {
   h += `<div class="btnrow">` +
        (plan ? `<button class="btn primary" onclick="openPlan('${b.code}')">Open floor plan</button>` : "") +
        (hasRoute ? `<button class="btn" onclick="evacRoute('${esc(b.code)}', '${esc(b.name).replace(/'/g, "\\'")}')">Evacuation route</button>` : "") +
+       `<button class="btn" onclick="walkTo('${esc(b.code || b.name)}','')">Take me there</button>` +
        `<button class="btn" onclick="copyLink('b','${esc(b.code || b.name)}',this)">Copy link</button>` +
-       `</div><div id="routeInfo" class="src" style="border-left-color:#b1341f"></div>`;
+       `</div><div id="walkInfo" class="src" style="border-left-color:#0e9fbd"></div>` +
+       `<div id="routeInfo" class="src" style="border-left-color:#b1341f"></div>`;
   if (dir) {
     h += `<h3>Rooms on the posted plan</h3><ul class="roomlist">` +
       dir.rooms.map(r => `<li><b>${esc(r.code)}</b> ${esc(r.name || "")}${r.capacity ? ` <span class="sub">· ${r.capacity}</span>` : ""}</li>`).join("") + `</ul>`;
@@ -376,12 +504,12 @@ function showBuilding(b, partial) {
   if (b.note) h += `<div class="src">${esc(b.note)}</div>`;
   if (b.codeSrc) h += `<div class="src"><b>Building code:</b> ${esc(b.codeSrc)}</div>`;
   openPanel(h + `</div>`);
+  flyTo(b);
 }
 
 function showRoom(r) {
   if (!r.code && r.planIdx != null) { openPlanAt(r.bcode, r.planIdx, r.name); return; }
   const b = buildingByCode(r.bcode);
-  if (b) flyTo(b, 18.5);
   const plan = DATA.plans[r.bcode];
   const inPlan = plan && plan.rooms.some(x => norm(x.code) === norm(r.code));
   let h = `<div class="pad"><div class="eyebrow">${esc(r.bcode)} · ${esc(r.bname)}</div>
@@ -389,21 +517,22 @@ function showRoom(r) {
   if (r.name) h += `<p class="sub">${esc(r.name)}</p>`;
   if (r.capacity) h += `<p class="sub">Seats ${esc(r.capacity)}</p>`;
   if (r.zone) h += `<p class="sub">Where in the building: ${esc(r.zone)}</p>`;
-  h += `<div class="btnrow"><button class="btn" onclick="copyLink('r','${esc(r.code)}',this)">Copy link to this room</button></div></div>`;
-  if (inPlan) h += `<div class="planbar"><span>Highlighted on the posted floor plan</span>
+  h += `<div class="btnrow">
+      <button class="btn primary" onclick="walkTo('${esc(r.bcode)}','${esc(r.code)}')">Take me there</button>
+      <button class="btn" onclick="copyLink('r','${esc(r.code)}',this)">Copy link</button></div>
+    <div id="walkInfo" class="src" style="border-left-color:#0e9fbd"></div></div>`;
+  if (plan) h += `<div class="planbar"><span>${inPlan ? "Highlighted on" : "This room is not outlined on"} the posted floor plan</span>
       <span style="margin-left:auto"><button class="zoombtn" onclick="planZoom(1.3)">+</button>
       <button class="zoombtn" onclick="planZoom(1/1.3)">−</button>
       <button class="zoombtn" onclick="planReset()">⤢</button></span></div>
       <div class="planwrap" id="planwrap">${planSVG(plan, r.code)}</div>`;
   h += `<div class="pad" style="padding-top:14px">`;
-  if (!inPlan) h += plan
-    ? `<div class="warn">${esc(r.bcode)}'s floor plan is captured, but this room is not outlined on it
-       yet, so I can open the plan for you without lighting up the room.
-       <button class="btn" style="margin-top:8px" onclick="openPlan('${esc(r.bcode)}')">Open the plan anyway</button></div>`
-    : `<div class="warn">This room is real and in ${esc(r.bcode)}, but ${esc(r.bcode)}'s floor plan has not been captured yet, so I can put you at the building, not at the door.</div>`;
+  if (!plan) h += `<div class="warn">This room is real and in ${esc(r.bcode)}, but ${esc(r.bcode)}'s floor plan has not been captured yet, so I can put you at the building, not at the door.</div>`;
+  else if (!inPlan) h += `<div class="warn">This room is on the plan above but is not outlined yet, so it is not lit up.</div>`;
   h += `<div class="src"><b>Source:</b> ${esc(r.source)}</div></div>`;
   openPanel(h);
-  if (inPlan) { initPlanPan(); setTimeout(() => focusRoom(r.code), 30); }
+  if (b) flyTo(b, 18.5);
+  if (plan) { initPlanPan(); if (inPlan) setTimeout(() => focusRoom(r.code), 30); }
 }
 
 /* -------------------------------------------------------- floor plan */
@@ -426,7 +555,7 @@ function planSVG(plan, highlight) {
              data-name="${esc(r.name || "")}" data-i="${i}"><title>${esc(r.code || r.name)}${r.name && r.code ? " · " + esc(r.name) : ""}</title></polygon>` +
       (showLabel && short ? `<text class="plabel" x="${cx}" y="${cy}" text-anchor="middle" dominant-baseline="central" style="font-size:${fs}px">${esc(short)}</text>` : "");
   }).join("");
-  const img = raster ? `<image href="${esc(plan.image)}?v=17" x="0" y="0" width="${plan.width}"
+  const img = raster ? `<image href="${esc(plan.image)}?v=21" x="0" y="0" width="${plan.width}"
       height="${plan.height}" preserveAspectRatio="none"/>` : "";
   return `<svg viewBox="0 0 ${plan.width} ${plan.height}" preserveAspectRatio="xMidYMid meet" id="plansvg"
       role="img" aria-label="Floor plan of ${esc(plan.name)}, ${plan.rooms.length} spaces${highlight ? ", " + esc(highlight) + " highlighted" : ""}">
