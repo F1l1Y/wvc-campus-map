@@ -36,7 +36,7 @@ function dataError(what) {
   el.innerHTML = `<b>Could not load ${what}.</b> Check your connection and reload.`;
   document.body.appendChild(el);
 }
-fetch("campus.geojson?v=13").then(r => r.json()).then(gj => {
+fetch("campus.geojson?v=14").then(r => r.json()).then(gj => {
   const layer = L.geoJSON(gj, {
     style: styleFor,
     onEachFeature: (f, ly) => {
@@ -73,7 +73,7 @@ fetch("campus.geojson?v=13").then(r => r.json()).then(gj => {
 
 /* ------------------------------------------------------------- rooms */
 function loadRooms() {
-  return fetch("rooms.json?v=13").then(r => r.json()).then(j => {
+  return fetch("rooms.json?v=14").then(r => r.json()).then(j => {
     DATA.roomsDoc = j;
     for (const [bcode, b] of Object.entries(j.buildings || {}))
       for (const r of b.rooms)
@@ -88,7 +88,7 @@ function loadRooms() {
                           source: inv.source, kind: "schedule" });
       }
     // plans
-    return Promise.all(["pe"].map(id => fetch(`plans/${id}.json?v=13`).then(r => r.json()).then(p => {
+    return Promise.all(["pe","lrc"].map(id => fetch(`plans/${id}.json?v=14`).then(r => r.json()).then(p => {
       DATA.plans[p.building] = p;
       p.rooms.forEach((r, idx) => {
         if (!r.code) {
@@ -105,13 +105,13 @@ function loadRooms() {
   });
 }
 function loadCoverage() {
-  fetch("coverage.json?v=13").then(r => r.json()).then(j => { DATA.coverage = j; }).catch(() => {});
+  fetch("coverage.json?v=14").then(r => r.json()).then(j => { DATA.coverage = j; }).catch(() => {});
 }
 function loadRoutes() {
-  fetch("evac_routes.json?v=13").then(r => r.json()).then(j => { DATA.routes = j; }).catch(() => {});
+  fetch("evac_routes.json?v=14").then(r => r.json()).then(j => { DATA.routes = j; }).catch(() => {});
 }
 function loadAmenities() {
-  fetch("amenities.json?v=13").then(r => r.json()).then(j => { DATA.amen = j; buildAmenityLayers(j); });
+  fetch("amenities.json?v=14").then(r => r.json()).then(j => { DATA.amen = j; buildAmenityLayers(j); });
 }
 function buildingByCode(code) {
   const n = norm(code);
@@ -406,24 +406,27 @@ function showRoom(r) {
 let planState = { k: 1, x: 0, y: 0, plan: null };
 function planSVG(plan, highlight) {
   planState.plan = plan;
+  const raster = !!plan.image;
   const rooms = plan.rooms.map((r, i) => {
     const pts = r.poly.map(p => p.join(",")).join(" ");
     const on = highlight && norm(r.code) === norm(highlight);
-    const cls = `pr ${r.kind || "room"}${on ? " on" : ""}${r.code ? " hit" : ""}`;
+    const cls = `pr ${raster ? "over" : (r.kind || "room")}${on ? " on" : ""}${r.code ? " hit" : ""}`;
     const cx = r.poly.reduce((s, p) => s + p[0], 0) / r.poly.length;
     const cy = r.poly.reduce((s, p) => s + p[1], 0) / r.poly.length;
     const w = Math.max(...r.poly.map(p => p[0])) - Math.min(...r.poly.map(p => p[0]));
     const hgt = Math.max(...r.poly.map(p => p[1])) - Math.min(...r.poly.map(p => p[1]));
     const short = (r.code || "").replace(/^[A-Z/]+ /, "");
-    const showLabel = w > 34 && hgt > 22;
+    const showLabel = !raster && w > 34 && hgt > 22;
     const fs = Math.max(11, Math.min(26, w / Math.max(2, short.length) * 1.5));
     return `<polygon class="${cls}" points="${pts}" data-code="${esc(r.code)}"
              data-name="${esc(r.name || "")}" data-i="${i}"><title>${esc(r.code || r.name)}${r.name && r.code ? " · " + esc(r.name) : ""}</title></polygon>` +
       (showLabel && short ? `<text class="plabel" x="${cx}" y="${cy}" text-anchor="middle" dominant-baseline="central" style="font-size:${fs}px">${esc(short)}</text>` : "");
   }).join("");
+  const img = raster ? `<image href="${esc(plan.image)}?v=14" x="0" y="0" width="${plan.width}"
+      height="${plan.height}" preserveAspectRatio="none"/>` : "";
   return `<svg viewBox="0 0 ${plan.width} ${plan.height}" preserveAspectRatio="xMidYMid meet" id="plansvg"
       role="img" aria-label="Floor plan of ${esc(plan.name)}, ${plan.rooms.length} spaces${highlight ? ", " + esc(highlight) + " highlighted" : ""}">
-      <g id="plang">${rooms}</g></svg>`;
+      <g id="plang">${img}${rooms}</g></svg>`;
 }
 function applyPlanTransform() {
   const g = document.getElementById("plang");

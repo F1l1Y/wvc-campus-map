@@ -1,0 +1,426 @@
+{
+ "building": "LRC",
+ "name": "Learning Resource Commons",
+ "image": "plans/lrc.jpg",
+ "width": 2565,
+ "height": 1590,
+ "floor": "Main floor, as shown on the building's own wayfinding display",
+ "source": "Photograph of the LRC wayfinding display taken in the building 2026-09-02 11:24 (the screen is headed 'Welcome to the LRC' and dated Wednesday 02 September 2026). The photo was taken at an angle to the screen and has been perspective-corrected (the four screen corners mapped square) so the plan is square-on. Room boxes were traced on the corrected image and each was checked against the room number printed inside it.",
+ "caution": "This is the building's own display, so it is current, but the green and pink shading on it was live room-booking status at 11:24 that morning, not part of the building. 18 of the 26 known rooms are boxed so far; the rest are listed but not yet outlined.",
+ "rooms": [
+  {
+   "code": "LRC 102",
+   "name": "Group study room",
+   "kind": "room",
+   "poly": [
+    [
+     650,
+     221
+    ],
+    [
+     798,
+     221
+    ],
+    [
+     798,
+     311
+    ],
+    [
+     650,
+     311
+    ]
+   ]
+  },
+  {
+   "code": "LRC 103",
+   "name": "Group study room",
+   "kind": "room",
+   "poly": [
+    [
+     650,
+     311
+    ],
+    [
+     799,
+     311
+    ],
+    [
+     799,
+     400
+    ],
+    [
+     650,
+     400
+    ]
+   ]
+  },
+  {
+   "code": "LRC 104",
+   "name": "Group study room",
+   "kind": "room",
+   "poly": [
+    [
+     652,
+     401
+    ],
+    [
+     804,
+     401
+    ],
+    [
+     804,
+     492
+    ],
+    [
+     652,
+     492
+    ]
+   ]
+  },
+  {
+   "code": "LRC 105",
+   "name": "Group study room",
+   "kind": "room",
+   "poly": [
+    [
+     652,
+     494
+    ],
+    [
+     804,
+     494
+    ],
+    [
+     804,
+     583
+    ],
+    [
+     652,
+     583
+    ]
+   ]
+  },
+  {
+   "code": "LRC 106",
+   "name": "Group study room",
+   "kind": "room",
+   "poly": [
+    [
+     656,
+     585
+    ],
+    [
+     805,
+     585
+    ],
+    [
+     805,
+     675
+    ],
+    [
+     656,
+     675
+    ]
+   ]
+  },
+  {
+   "code": "LRC 109",
+   "name": "Group study room",
+   "kind": "room",
+   "poly": [
+    [
+     672,
+     1054
+    ],
+    [
+     819,
+     1054
+    ],
+    [
+     819,
+     1153
+    ],
+    [
+     672,
+     1153
+    ]
+   ]
+  },
+  {
+   "code": "LRC 110",
+   "name": "Group study room",
+   "kind": "room",
+   "poly": [
+    [
+     672,
+     1153
+    ],
+    [
+     819,
+     1153
+    ],
+    [
+     819,
+     1245
+    ],
+    [
+     672,
+     1245
+    ]
+   ]
+  },
+  {
+   "code": "LRC 111",
+   "name": "Group room",
+   "kind": "room",
+   "poly": [
+    [
+     67,
+     1278
+    ],
+    [
+     261,
+     1278
+    ],
+    [
+     261,
+     1519
+    ],
+    [
+     67,
+     1519
+    ]
+   ]
+  },
+  {
+   "code": "LRC 115",
+   "name": "Group study room",
+   "kind": "room",
+   "poly": [
+    [
+     680,
+     1350
+    ],
+    [
+     811,
+     1350
+    ],
+    [
+     811,
+     1507
+    ],
+    [
+     680,
+     1507
+    ]
+   ]
+  },
+  {
+   "code": "LRC 116",
+   "name": "Group study room",
+   "kind": "room",
+   "poly": [
+    [
+     813,
+     1323
+    ],
+    [
+     925,
+     1323
+    ],
+    [
+     925,
+     1507
+    ],
+    [
+     813,
+     1507
+    ]
+   ]
+  },
+  {
+   "code": "LRC 134",
+   "name": "Tech Training",
+   "kind": "room",
+   "poly": [
+    [
+     1143,
+     648
+    ],
+    [
+     1253,
+     648
+    ],
+    [
+     1253,
+     851
+    ],
+    [
+     1143,
+     851
+    ]
+   ]
+  },
+  {
+   "code": "LRC 140",
+   "name": "Study room",
+   "kind": "room",
+   "poly": [
+    [
+     807,
+     550
+    ],
+    [
+     900,
+     550
+    ],
+    [
+     900,
+     674
+    ],
+    [
+     807,
+     674
+    ]
+   ]
+  },
+  {
+   "code": "LRC 141",
+   "name": "Med Room",
+   "kind": "room",
+   "poly": [
+    [
+     807,
+     412
+    ],
+    [
+     900,
+     412
+    ],
+    [
+     900,
+     552
+    ],
+    [
+     807,
+     552
+    ]
+   ]
+  },
+  {
+   "code": "LRC 143",
+   "name": "Tutoring",
+   "kind": "room",
+   "poly": [
+    [
+     801,
+     161
+    ],
+    [
+     967,
+     161
+    ],
+    [
+     967,
+     412
+    ],
+    [
+     801,
+     412
+    ]
+   ]
+  },
+  {
+   "code": "LRC 144",
+   "name": "Study room",
+   "kind": "room",
+   "poly": [
+    [
+     1140,
+     166
+    ],
+    [
+     1238,
+     166
+    ],
+    [
+     1238,
+     319
+    ],
+    [
+     1140,
+     319
+    ]
+   ]
+  },
+  {
+   "code": "LRC 163",
+   "name": "Collab Lab",
+   "kind": "room",
+   "poly": [
+    [
+     1739,
+     223
+    ],
+    [
+     1931,
+     223
+    ],
+    [
+     1931,
+     419
+    ],
+    [
+     1739,
+     419
+    ]
+   ]
+  },
+  {
+   "code": "LRC 164",
+   "name": "Maker Space",
+   "kind": "room",
+   "poly": [
+    [
+     1738,
+     32
+    ],
+    [
+     2069,
+     32
+    ],
+    [
+     2069,
+     217
+    ],
+    [
+     1738,
+     217
+    ]
+   ]
+  },
+  {
+   "code": "LRC 179",
+   "name": "Large tech training room",
+   "kind": "room",
+   "poly": [
+    [
+     1750,
+     863
+    ],
+    [
+     2061,
+     863
+    ],
+    [
+     2061,
+     1071
+    ],
+    [
+     1750,
+     1071
+    ]
+   ]
+  }
+ ]
+}
