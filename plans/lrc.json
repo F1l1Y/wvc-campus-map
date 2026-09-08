@@ -6,7 +6,7 @@
  "height": 1590,
  "floor": "Main floor, as shown on the building's own wayfinding display",
  "source": "Photograph of the LRC wayfinding display taken in the building 2026-09-02 11:24 (the screen is headed 'Welcome to the LRC' and dated Wednesday 02 September 2026). The photo was taken at an angle to the screen and has been perspective-corrected (the four screen corners mapped square) so the plan is square-on. Room boxes were traced on the corrected image and each was checked against the room number printed inside it.",
- "caution": "This is the building's own display, so it is current, but the green and pink shading on it was live room-booking status at 11:24 that morning, not part of the building. 18 of the 26 known rooms are boxed so far; the rest are listed but not yet outlined.",
+ "caution": "This is the building's own display, so it is current, but the green and pink shading on it was live room-booking status at 11:24 that morning, not part of the building. 24 of the 26 known rooms are outlined; LRC 156 and 171 are listed but not yet outlined because their labels sit outside the shaded area and I would be guessing.",
  "rooms": [
   {
    "code": "LRC 102",
@@ -120,6 +120,29 @@
     [
      656,
      675
+    ]
+   ]
+  },
+  {
+   "code": "LRC 108B",
+   "name": "Conference Room",
+   "kind": "room",
+   "poly": [
+    [
+     779,
+     813
+    ],
+    [
+     878,
+     813
+    ],
+    [
+     878,
+     895
+    ],
+    [
+     779,
+     895
     ]
    ]
   },
@@ -239,6 +262,29 @@
    ]
   },
   {
+   "code": "LRC 121",
+   "name": "Med Room",
+   "kind": "room",
+   "poly": [
+    [
+     984,
+     1129
+    ],
+    [
+     1111,
+     1129
+    ],
+    [
+     1111,
+     1232
+    ],
+    [
+     984,
+     1232
+    ]
+   ]
+  },
+  {
    "code": "LRC 134",
    "name": "Tech Training",
    "kind": "room",
@@ -258,6 +304,29 @@
     [
      1143,
      851
+    ]
+   ]
+  },
+  {
+   "code": "LRC 135",
+   "name": "Tech Training",
+   "kind": "room",
+   "poly": [
+    [
+     871,
+     729
+    ],
+    [
+     976,
+     729
+    ],
+    [
+     976,
+     820
+    ],
+    [
+     871,
+     820
     ]
    ]
   },
@@ -354,6 +423,52 @@
    ]
   },
   {
+   "code": "LRC 155",
+   "name": "Learning Glass studio",
+   "kind": "room",
+   "poly": [
+    [
+     1238,
+     801
+    ],
+    [
+     1308,
+     801
+    ],
+    [
+     1308,
+     889
+    ],
+    [
+     1238,
+     889
+    ]
+   ]
+  },
+  {
+   "code": "LRC 162",
+   "name": "Large tech training room",
+   "kind": "room",
+   "poly": [
+    [
+     1728,
+     470
+    ],
+    [
+     1886,
+     470
+    ],
+    [
+     1886,
+     672
+    ],
+    [
+     1728,
+     672
+    ]
+   ]
+  },
+  {
    "code": "LRC 163",
    "name": "Collab Lab",
    "kind": "room",
@@ -396,6 +511,29 @@
     [
      1738,
      217
+    ]
+   ]
+  },
+  {
+   "code": "LRC 167",
+   "name": "Control Room",
+   "kind": "room",
+   "poly": [
+    [
+     2125,
+     258
+    ],
+    [
+     2353,
+     258
+    ],
+    [
+     2353,
+     408
+    ],
+    [
+     2125,
+     408
     ]
    ]
   },

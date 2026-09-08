@@ -36,7 +36,7 @@ function dataError(what) {
   el.innerHTML = `<b>Could not load ${what}.</b> Check your connection and reload.`;
   document.body.appendChild(el);
 }
-fetch("campus.geojson?v=14").then(r => r.json()).then(gj => {
+fetch("campus.geojson?v=15").then(r => r.json()).then(gj => {
   const layer = L.geoJSON(gj, {
     style: styleFor,
     onEachFeature: (f, ly) => {
@@ -73,7 +73,7 @@ fetch("campus.geojson?v=14").then(r => r.json()).then(gj => {
 
 /* ------------------------------------------------------------- rooms */
 function loadRooms() {
-  return fetch("rooms.json?v=14").then(r => r.json()).then(j => {
+  return fetch("rooms.json?v=15").then(r => r.json()).then(j => {
     DATA.roomsDoc = j;
     for (const [bcode, b] of Object.entries(j.buildings || {}))
       for (const r of b.rooms)
@@ -88,7 +88,7 @@ function loadRooms() {
                           source: inv.source, kind: "schedule" });
       }
     // plans
-    return Promise.all(["pe","lrc"].map(id => fetch(`plans/${id}.json?v=14`).then(r => r.json()).then(p => {
+    return Promise.all(["pe","lrc"].map(id => fetch(`plans/${id}.json?v=15`).then(r => r.json()).then(p => {
       DATA.plans[p.building] = p;
       p.rooms.forEach((r, idx) => {
         if (!r.code) {
@@ -105,13 +105,13 @@ function loadRooms() {
   });
 }
 function loadCoverage() {
-  fetch("coverage.json?v=14").then(r => r.json()).then(j => { DATA.coverage = j; }).catch(() => {});
+  fetch("coverage.json?v=15").then(r => r.json()).then(j => { DATA.coverage = j; }).catch(() => {});
 }
 function loadRoutes() {
-  fetch("evac_routes.json?v=14").then(r => r.json()).then(j => { DATA.routes = j; }).catch(() => {});
+  fetch("evac_routes.json?v=15").then(r => r.json()).then(j => { DATA.routes = j; }).catch(() => {});
 }
 function loadAmenities() {
-  fetch("amenities.json?v=14").then(r => r.json()).then(j => { DATA.amen = j; buildAmenityLayers(j); });
+  fetch("amenities.json?v=15").then(r => r.json()).then(j => { DATA.amen = j; buildAmenityLayers(j); });
 }
 function buildingByCode(code) {
   const n = norm(code);
@@ -422,7 +422,7 @@ function planSVG(plan, highlight) {
              data-name="${esc(r.name || "")}" data-i="${i}"><title>${esc(r.code || r.name)}${r.name && r.code ? " · " + esc(r.name) : ""}</title></polygon>` +
       (showLabel && short ? `<text class="plabel" x="${cx}" y="${cy}" text-anchor="middle" dominant-baseline="central" style="font-size:${fs}px">${esc(short)}</text>` : "");
   }).join("");
-  const img = raster ? `<image href="${esc(plan.image)}?v=14" x="0" y="0" width="${plan.width}"
+  const img = raster ? `<image href="${esc(plan.image)}?v=15" x="0" y="0" width="${plan.width}"
       height="${plan.height}" preserveAspectRatio="none"/>` : "";
   return `<svg viewBox="0 0 ${plan.width} ${plan.height}" preserveAspectRatio="xMidYMid meet" id="plansvg"
       role="img" aria-label="Floor plan of ${esc(plan.name)}, ${plan.rooms.length} spaces${highlight ? ", " + esc(highlight) + " highlighted" : ""}">
