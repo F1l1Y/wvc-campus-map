@@ -122,7 +122,7 @@ button{font:inherit;color:inherit}
   .search{order:2;flex:1 1 auto;max-width:none}
   .actions{order:3}
   .by{display:none}
-  .panel{top:auto;left:0;right:0;bottom:0;width:100%;max-height:82vh;border-left:0;
+  .panel{top:auto;left:0;right:0;bottom:0;width:100%;max-height:76vh;border-left:0;
     border-top:1px solid var(--line);border-radius:16px 16px 0 0}
   .layers{bottom:36px}
 }

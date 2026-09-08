@@ -6,7 +6,7 @@
    every room comes from an official plan or the official schedule, and carries its source. */
 
 const CAMPUS_CENTER = [37.2637, -122.0096];
-const DATA = { buildings: [], rooms: [], plans: {}, amen: null, roomsDoc: null, routes: null };
+const DATA = { buildings: [], rooms: [], plans: {}, amen: null, roomsDoc: null, routes: null, sportLayers: [] };
 const $ = (s) => document.querySelector(s);
 
 /* ---------------------------------------------------------------- map */
@@ -21,6 +21,7 @@ const C = { navy:"#0f172a", lime:"#8fce2a", limeD:"#4d7a0c", cyan:"#0e9fbd", sla
 function styleFor(f) {
   const p = f.properties;
   if (p.kind === "parking") return { color: C.cyan, weight: 1, fillColor: C.cyan, fillOpacity: .1 };
+  if (p.kind === "sport") return { color: "#3f8f5e", weight: 1, fillColor: "#6fbf8a", fillOpacity: .3 };
   const named = !!p.name;
   return { color: named ? C.limeD : C.slate, weight: named ? 1.5 : 1,
            fillColor: named ? C.navy : "#93a0b4", fillOpacity: named ? .5 : .22 };
@@ -45,10 +46,14 @@ fetch("campus.geojson?v=10").then(r => r.json()).then(gj => {
         ly.on("click", () => showBuilding(b));
       } else if (p.kind === "parking") {
         ly.on("click", () => ly.bindPopup("<b>Parking</b>").openPopup());
+      } else if (p.kind === "sport") {
+        DATA.sportLayers.push(ly);
+        ly.bindTooltip(p.name, { direction: "center", className: "lbl lbl-park" });
+        ly.on("click", () => ly.bindPopup(`<b>${p.name}</b><br><small>Named from the official campus map, Feb 2024</small>`).openPopup());
       }
     },
   }).addTo(map);
-  const built = L.featureGroup(DATA.buildings.map(b => b.layer));
+  const built = L.featureGroup(DATA.buildings.map(b => b.layer).concat(DATA.sportLayers));
   map.invalidateSize();
   try { map.fitBounds(built.getBounds(), { padding: [24, 24], maxZoom: 17 }); }
   catch (e) { map.setView(CAMPUS_CENTER, 16); }
@@ -76,8 +81,12 @@ function loadRooms() {
     // plans
     ["pe"].forEach(id => fetch(`plans/${id}.json?v=10`).then(r => r.json()).then(p => {
       DATA.plans[p.building] = p;
-      p.rooms.forEach(r => {
-        if (!r.code) return;
+      p.rooms.forEach((r, idx) => {
+        if (!r.code) {
+          if (r.name) DATA.rooms.push({ code: "", label: r.name, name: r.name, bcode: p.building,
+                                        bname: p.name, source: p.source, kind: "plan", planIdx: idx });
+          return;
+        }
         const hit = DATA.rooms.find(x => norm(x.code) === norm(r.code));
         if (hit) { hit.kind = "plan"; hit.name = hit.name || r.name; }
         else DATA.rooms.push({ code: r.code, name: r.name, bcode: p.building, bname: p.name,
@@ -134,10 +143,19 @@ const q = $("#q"), results = $("#results"), clearBtn = $("#clearBtn");
 function norm(s) { return (s || "").toLowerCase().replace(/[^a-z0-9]+/g, " ").trim(); }
 function squash(s) { return norm(s).replace(/ /g, ""); }
 
+const SYNONYM = { bathroom:"restroom", toilet:"restroom", washroom:"restroom", loo:"restroom",
+  wc:"restroom", defibrillator:"aed", gym:"gymnasium", cafeteria:"cafe", coffee:"cafe",
+  library:"library", weights:"weight training", pool:"swimming pool" };
+const TOPIC = { restroom:"restroom_gender_neutral", aed:"aed", defibrillator:"aed",
+  evacuation:"evacuation_site", parking:"parking", ev:"ev_charger", charger:"ev_charger" };
+
 function find(text) {
-  const n = norm(text), sq = squash(text);
+  let n = norm(text);
+  n = n.split(" ").map(w => SYNONYM[w] || w).join(" ");
+  const sq = squash(n);
   if (!n) return [];
   const out = [];
+  if (TOPIC[n]) out.push({ kind: "topic", topic: TOPIC[n], label: text.trim(), score: -1 });
   for (const r of DATA.rooms) {
     const c = norm(r.code), cs = squash(r.code);
     let score = null;
@@ -178,11 +196,14 @@ function renderResults() {
     if (h.kind === "building")
       return `<li role="option" data-i="${i}"><span class="code">${esc(h.b.code || "")}</span>
         <span class="sub">${esc(h.b.name)}</span><span class="tag">${h.partial ? "building only" : "building"}</span></li>`;
+    if (h.kind === "topic")
+      return `<li role="option" data-i="${i}"><span class="code">${esc(h.label)}</span>
+        <span class="sub">everywhere on campus</span><span class="tag plan">map layer</span></li>`;
     const r = h.r, tag = r.kind === "plan" ? '<span class="tag plan">floor plan</span>'
                     : r.kind === "directory" ? '<span class="tag">listed</span>'
                     : '<span class="tag">in schedule</span>';
-    return `<li role="option" data-i="${i}"><span class="code">${esc(r.code)}</span>
-      <span class="sub">${esc(r.name || r.bname)}</span>${tag}</li>`;
+    return `<li role="option" data-i="${i}"><span class="code">${esc(r.code || r.label)}</span>
+      <span class="sub">${esc(r.code ? (r.name || r.bname) : r.bcode + " · " + r.bname)}</span>${tag}</li>`;
   }).join("");
   results.hidden = false;
   results.querySelectorAll("li[data-i]").forEach(li =>
@@ -209,7 +230,41 @@ document.addEventListener("click", e => { if (!e.target.closest(".search")) resu
 
 function choose(h) {
   results.hidden = true; q.blur();
-  if (h.kind === "building") showBuilding(h.b, h.partial); else showRoom(h.r);
+  if (h.kind === "topic") showTopic(h.topic);
+  else if (h.kind === "building") showBuilding(h.b, h.partial);
+  else showRoom(h.r);
+}
+
+function showTopic(type) {
+  const g = type.startsWith("parking") ? "parking" : type;
+  const chip = document.querySelector(`.chip[data-layer="${g}"]`);
+  if (chip && chip.getAttribute("aria-pressed") !== "true") chip.click();
+  const j = DATA.amen; if (!j) return;
+  const items = j.items.filter(i => amenGroup(i.type) === g);
+  const TITLE = { restroom_gender_neutral: "Restrooms", aed: "AEDs", evacuation_site: "Evacuation sites",
+                  parking: "Parking", ev_charger: "EV charging" };
+  let h = `<div class="pad"><div class="eyebrow">Map layer</div><h2>${TITLE[g] || g}</h2>
+    <p class="sub">${items.length} shown on the map, from the official campus map of February 2024.</p>`;
+  if (g === "restroom_gender_neutral") {
+    const plan = [];
+    for (const [bc, p] of Object.entries(DATA.plans))
+      p.rooms.forEach(r => { if (/restroom/i.test(r.name || "")) plan.push(`${bc} · ${r.name}`); });
+    h += `<div class="warn">The official map marks only <b>gender-neutral</b> restrooms, so those
+      ${items.length} are what can be shown campus-wide. Every other restroom has to come off a
+      building's floor plan.</div>`;
+    if (plan.length) h += `<h3>Also on a captured floor plan</h3><ul class="roomlist">` +
+      plan.map(t => `<li>${esc(t)}</li>`).join("") + `</ul>`;
+    h += `<h3>Known but not yet transcribed</h3><p class="sub">The LRC wayfinding display marks its
+      restrooms; they need a straight-on photo before they can go on the map.</p>`;
+  }
+  const near = {};
+  items.forEach(i => { near[i.near_code || i.near] = (near[i.near_code || i.near] || 0) + 1; });
+  h += `<h3>Where they are</h3><div class="chips">` +
+    Object.entries(near).sort((a, b) => b[1] - a[1])
+      .map(([k, v]) => `<span class="tagchip">${esc(k)}${v > 1 ? " ×" + v : ""}</span>`).join("") + `</div>`;
+  h += `<div class="src"><b>Source:</b> ${esc(j.source)}. Placed by a ${esc(j.fit.method)},
+    mean ${j.fit.mean_residual_m} m.</div></div>`;
+  openPanel(h);
 }
 
 /* -------------------------------------------------- evacuation route */
@@ -297,6 +352,7 @@ function showBuilding(b, partial) {
 }
 
 function showRoom(r) {
+  if (!r.code && r.planIdx != null) { openPlanAt(r.bcode, r.planIdx, r.name); return; }
   const b = buildingByCode(r.bcode);
   if (b) flyTo(b, 18.5);
   const plan = DATA.plans[r.bcode];
@@ -402,6 +458,26 @@ function openPlan(bcode) {
   if (p.caution) h += `<div class="warn">${esc(p.caution)}</div>`;
   h += `<div class="src"><b>Source:</b> ${esc(p.source)}</div></div>`;
   openPanel(h); initPlanPan();
+}
+function openPlanAt(bcode, idx, name) {
+  const b = buildingByCode(bcode); if (b) flyTo(b);
+  const p = DATA.plans[bcode]; if (!p) return;
+  openPlan(bcode);
+  setTimeout(() => {
+    const poly = document.querySelector(`#planwrap polygon[data-i="${idx}"]`);
+    if (poly) poly.classList.add("on");
+    const r = p.rooms[idx];
+    if (r) { planState.plan = p; focusPoly(r); }
+  }, 40);
+}
+function focusPoly(r) {
+  const p = planState.plan; if (!p || !r) return;
+  const xs = r.poly.map(q => q[0]), ys = r.poly.map(q => q[1]);
+  const cx = (Math.min(...xs) + Math.max(...xs)) / 2, cy = (Math.min(...ys) + Math.max(...ys)) / 2;
+  const rw = Math.max(12, Math.max(...xs) - Math.min(...xs)), rh = Math.max(12, Math.max(...ys) - Math.min(...ys));
+  const k = Math.max(1, Math.min(4.5, Math.min(p.width / rw, p.height / rh) / 3));
+  planState.k = k; planState.x = p.width / 2 - cx * k; planState.y = p.height / 2 - cy * k;
+  applyPlanTransform();
 }
 window.openPlan = openPlan; window.planZoom = planZoom; window.planReset = planReset;
 
